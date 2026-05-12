@@ -7,7 +7,7 @@ Prototype pages:
 - `index.html` - roster editor prototype landing page
 - `roster-v2-sample.json` - sample editable roster shape for future class setup work
 
-Team Name: Quackalers
+Team Name: the Quackalers
 Team Members: Audrey Galletti, Jacob Ralston, and Joshua Rios
 
 Short Plan:
