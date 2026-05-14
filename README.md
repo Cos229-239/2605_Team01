@@ -5,7 +5,10 @@ Start here. Keep this README updated with your team name, members, and a short p
 Team Name: The Quakalers
 
 ## Team Members:
-Joshua Rios, Jacob Ralston, and Audrey Galletti
+
+- Joshua Rios
+- Jacob Ralston
+- Audrey Galletti
 
 Prototype pages:
 
