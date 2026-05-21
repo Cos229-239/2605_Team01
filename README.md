@@ -2,6 +2,14 @@
 
 Start here. Keep this README updated with your team name, members, and a short plan.
 
+Team Name: The Quakalers
+
+## Team Members:
+
+- Joshua Rios
+- Jacob Ralston
+- Audrey Galletti
+
 Prototype pages:
 
 - `index.html` - roster editor prototype landing page
