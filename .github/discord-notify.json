@@ -63,7 +63,7 @@
     "main": false,
     "gh-pages": false,
     "audrey": true,
-    "dev": true,
+    "dev": false,
     "Jacobdev": true,
     "josh-personal": true,
     "PatrickPersonal": false
