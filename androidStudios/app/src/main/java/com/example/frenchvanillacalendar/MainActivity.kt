@@ -20,8 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FrenchVanillaCalendarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    CalendarScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -29,19 +28,38 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+data class CalendarEvent(
+    val title: String,
+    val date: String,
+    val time: String,
+    val category: String,
+)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun CalendarScreen(modifier: Modifier = Modifier) {
+    val events = listOf(
+        CalendarEvent(
+            title = "Homework",
+            date = "June 10, 2026",
+            time = "3:00 PM",
+            category = "School"
+        ),
+        CalendarEvent(
+            title = "The PACER Exam",
+            date = "June 14, 2026",
+            time = "10:00 AM",
+            category = "School"
+        )
+    )
     Text(
-        text = "Hello $name!",
+        text = "Calendar setup started - ${events.size} events loaded",
         modifier = modifier
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun CalendarPreview() {
     FrenchVanillaCalendarTheme {
-        Greeting("Android")
+        CalendarScreen()
     }
 }
