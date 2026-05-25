@@ -16,7 +16,7 @@ Team Name: The Quakalers
 ## Team Members:
 
 - Joshua Rios
-- Jacob Ralston
+- Jacob Ralston !=
 - Audrey Galletti
 
 Prototype pages:
