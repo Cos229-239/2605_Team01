@@ -74,7 +74,7 @@
       "nightly": true,
       "weekly": false,
       "diverged": true,
-      "mention": false,
+      "mention": true,
       "owner_name": "Audrey Galletti",
       "owner_discord_user_id": "1127777512735375440"
     },
@@ -82,8 +82,8 @@
       "push": true,
       "nightly": false,
       "weekly": false,
-      "diverged": true,
-      "mention": false,
+      "diverged": false,
+      "mention": true,
       "owner_name": "",
       "owner_discord_user_id": ""
     },
@@ -92,7 +92,7 @@
       "nightly": true,
       "weekly": false,
       "diverged": true,
-      "mention": false,
+      "mention": true,
       "owner_name": "Jacob Ralston",
       "owner_discord_user_id": "1325888707525607445"
     },
@@ -101,7 +101,7 @@
       "nightly": true,
       "weekly": false,
       "diverged": true,
-      "mention": false,
+      "mention": true,
       "owner_name": "Joshua Rios",
       "owner_discord_user_id": "1014700649436414022"
     },
