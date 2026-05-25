@@ -82,7 +82,7 @@
       "push": true,
       "nightly": false,
       "weekly": false,
-      "diverged": false,
+      "diverged": true,
       "mention": true,
       "owner_name": "",
       "owner_discord_user_id": ""
