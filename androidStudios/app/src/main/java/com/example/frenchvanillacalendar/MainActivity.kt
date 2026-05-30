@@ -59,6 +59,16 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     )
     Column(modifier = modifier) {
         Text(
+            text = "June 2026"
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Sun Mon Tue Wed Thu Fri Sat"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
             text = "Calendar setup started - ${events.size} events loaded"
         )
         Spacer(modifier = Modifier.height(16.dp))
