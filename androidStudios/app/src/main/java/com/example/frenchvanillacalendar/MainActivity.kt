@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.frenchvanillacalendar.ui.theme.FrenchVanillaCalendarTheme
@@ -71,6 +72,10 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        MonthGrid()
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Calendar setup started - ${events.size} events loaded"
         )
@@ -81,6 +86,32 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
             Text(
                 text = "${event.date}: ${event.title} at ${event.time}"
             )
+        }
+    }
+}
+
+@Composable
+fun MonthGrid() {
+    val weeks = listOf(
+        listOf("", "1", "2", "3", "4", "5", "6"),
+        listOf("7", "8", "9", "10", "11", "12", "13"),
+        listOf("14", "15", "16", "17", "18", "19", "20"),
+        listOf("21", "22", "23", "24", "25", "26", "27"),
+        listOf("28", "29", "30", "", "", "", "")
+    )
+
+    Column {
+        weeks.forEach { week ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+                week.forEach { day ->
+                    Text(
+                        text = day,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
