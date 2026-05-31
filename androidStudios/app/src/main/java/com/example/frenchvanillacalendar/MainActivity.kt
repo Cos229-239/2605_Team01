@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -57,25 +60,41 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
             category = "School"
         )
     )
+
     Column(modifier = modifier) {
         Text(
             text = "June 2026"
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Sun Mon Tue Wed Thu Fri Sat"
-        )
+        WeekdayRow()
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = "Calendar setup started - ${events.size} events loaded"
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         events.forEach { event ->
             Text(
                 text = "${event.date}: ${event.title} at ${event.time}"
             )
+        }
+    }
+}
+
+@Composable
+fun WeekdayRow() {
+    val weekdays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        weekdays.forEach { day ->
+            Text(text = day)
         }
     }
 }
