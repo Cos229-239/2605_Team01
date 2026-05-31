@@ -72,7 +72,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        MonthGrid()
+        MonthGrid(events = events)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -91,7 +91,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MonthGrid() {
+fun MonthGrid(events: List<CalendarEvent>) {
     val weeks = listOf(
         listOf("", "1", "2", "3", "4", "5", "6"),
         listOf("7", "8", "9", "10", "11", "12", "13"),
@@ -104,11 +104,24 @@ fun MonthGrid() {
         weeks.forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { day ->
-                    Text(
-                        text = day,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
-                    )
+                    val eventForDay = events.firstOrNull { event ->
+                        event.date == "June $day, 2026"
+                    }
+
+                    Column(modifier = Modifier.weight(1f)) {
+                     Text(
+                         text = day,
+                         textAlign = TextAlign.Center,
+                         modifier = Modifier.fillMaxWidth()
+                     )
+                        if (eventForDay != null) {
+                            Text(
+                                text = day,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
