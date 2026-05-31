@@ -32,9 +32,11 @@
             android:layout_width="74dp"
             android:layout_height="75dp"
             android:cropToPadding="true"
+            android:focusable="true"
             android:importantForAccessibility="no"
             android:paddingLeft="15dp"
             android:paddingTop="5dp"
+            android:clickable="true"
             android:paddingRight="15dp"
             tools:src="@drawable/hamburger_open_menu" />
 
@@ -44,9 +46,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/quicksand_semibold"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingRight="89dp"
             android:text="Calendar"
-            android:textAlignment="textStart"
+            android:gravity="center"
             android:textColor="#FF00AAB6"
             android:textSize="50sp"
             tools:ignore="HardcodedText" />
