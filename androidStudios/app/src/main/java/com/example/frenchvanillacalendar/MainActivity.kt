@@ -109,14 +109,14 @@ fun MonthGrid(events: List<CalendarEvent>) {
                     }
 
                     Column(modifier = Modifier.weight(1f)) {
-                     Text(
-                         text = day,
-                         textAlign = TextAlign.Center,
-                         modifier = Modifier.fillMaxWidth()
+                    Text(
+                        text = day,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                      )
                         if (eventForDay != null) {
                             Text(
-                                text = "*",  // Event Temp Event Name
+                                text = "*",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
                             )
