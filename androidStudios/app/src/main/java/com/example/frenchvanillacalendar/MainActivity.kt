@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
 data class CalendarEvent(
     val title: String,
-    val date: String,
+    val date: Int,
     val time: String,
     val category: String,
 )
@@ -50,13 +50,13 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     val events = listOf(
         CalendarEvent(
             title = "Homework",
-            date = "June 10, 2026",
+            date = 10,
             time = "3:00 PM",
             category = "School"
         ),
         CalendarEvent(
             title = "The PACER Exam",
-            date = "June 14, 2026",
+            date = 14,
             time = "10:00 AM",
             category = "School"
         )
@@ -84,8 +84,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         events.forEach { event ->
             Text(
-                text = "${event.date}: ${event.title} at ${event.time}"
-            )
+                text = "June ${event.date}, 2026: ${event.title} at ${event.time}"            )
         }
     }
 }
@@ -105,14 +104,14 @@ fun MonthGrid(events: List<CalendarEvent>) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { day ->
                     val eventForDay = events.firstOrNull { event ->
-                        event.date == "June $day, 2026"
+                        day.isNotBlank() && event.date == day.toInt()
                     }
 
                     Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = day,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        Text(
+                            text = day,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                      )
                         if (eventForDay != null) {
                             Text(
