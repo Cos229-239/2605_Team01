@@ -62,9 +62,14 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         )
     )
 
+    val monthName =  "June"
+    val year = 2026
+    val daysInMonth = 30
+    val startingBlankDays = 1
+
     Column(modifier = modifier) {
         Text(
-            text = "June 2026"
+            text = "$monthName $year"
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -72,7 +77,11 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        MonthGrid(events = events)
+        MonthGrid(
+            events = events,
+            daysInMonth = daysInMonth,
+            startingBlankDays = startingBlankDays
+            )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -84,20 +93,22 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         events.forEach { event ->
             Text(
-                text = "June ${event.date}, 2026: ${event.title} at ${event.time}"            )
+                text = "$monthName ${event.date}, $year: ${event.title} at ${event.time}"
+            )
         }
     }
 }
 
 @Composable
-fun MonthGrid(events: List<CalendarEvent>) {
-    val weeks = listOf(
-        listOf("", "1", "2", "3", "4", "5", "6"),
-        listOf("7", "8", "9", "10", "11", "12", "13"),
-        listOf("14", "15", "16", "17", "18", "19", "20"),
-        listOf("21", "22", "23", "24", "25", "26", "27"),
-        listOf("28", "29", "30", "", "", "", "")
-    )
+fun MonthGrid(
+    events: List<CalendarEvent>,
+    daysInMonth: Int,
+    startingBlankDays: Int
+) {
+    val calendarSlots = List(startingBlankDays) { "" } + (1..daysInMonth).map { day -> day.toString()
+    }
+    val trailingBlankDays = (7 -calendarSlots.size % 7) % 7
+    val weeks = (calendarSlots + List(trailingBlankDays) { "" }).chunked(7)
 
     Column {
         weeks.forEach { week ->
@@ -112,7 +123,7 @@ fun MonthGrid(events: List<CalendarEvent>) {
                             text = day,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
-                     )
+                         )
                         if (eventForDay != null) {
                             Text(
                                 text = "*",
