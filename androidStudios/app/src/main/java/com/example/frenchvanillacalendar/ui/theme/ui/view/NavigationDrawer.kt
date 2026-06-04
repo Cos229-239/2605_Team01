@@ -70,13 +70,13 @@ fun NavigationDrawer()
         drawerContent = {
             ModalDrawerSheet (drawerContainerColor = Color(102, 80, 164)) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(fraction = 0.7f)
+                    modifier = Modifier.fillMaxWidth(fraction = 0.9f)
                         .padding(10.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Text(
-                        text = "French vanilla Calendar",
+                        text = "French Vanilla Calendar",
                         modifier = Modifier.padding(start = 10.dp)
                             .fillMaxWidth(),
                         color = Color(255,255,255)
@@ -131,7 +131,6 @@ fun NavigationDrawer()
                             Text(text = drawerItems.title)
                         },
                         modifier = Modifier.fillMaxWidth().padding(5.dp)
-
                     )
                 }
             }
