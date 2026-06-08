@@ -5,25 +5,21 @@ Start here. Keep this README updated with your team name, members, and a short p
 The Quakalers, Jacob Ralston, Audrey Galletti, Joshua Rios, will be working on our calendar app project. This app is intended to be easy to navigate as well as provide some key functions that will be impactful to users. 
 
 STP: will be to get the calendar laid out and major features outlined.  This will then allow overall look and fine-tuning to be done in the later stages of development.
-<<<<<Head 
->>>>>>> Head 
 
 The Quakalers, Jacob Ralston, Audrey Galletti, Joshua Rios.  
 We'll be working on our calendar app project. This app is intended to be easy to navigate as well as provide some key functions that will be impactful to users. 
 
 STP: Will be to get the calendar laid out and major features outlined.  This will then allow overall look and fine-tuning to be done in the later stages of development.
 Prototype pages: 
-=======
 Team Name: The Quakalers
 
 ## Team Members:
 
 - Joshua Rios
-- Jacob Ralston
+- Jacob Ralston !=
 - Audrey Galletti
 
 Prototype pages:
->>>>>>> dev
 
 - `index.html` - roster editor prototype landing page
 - `roster-v2-sample.json` - sample editable roster shape for future class setup work
