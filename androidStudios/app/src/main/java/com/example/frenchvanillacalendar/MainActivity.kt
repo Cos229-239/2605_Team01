@@ -12,6 +12,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.frenchvanillacalendar.ui.theme.FrenchVanillaCalendarTheme
+import android.os.CountDownTimer //import the countdown timer
+
+//EventCountdownTimer class created
+class EventCountdownTimer(private val eventTimeMillis: Long,
+                          private val onTick: (days: Long, hours: Long, minutes: Long, seconds: Long) -> Unit,
+                          private val onFinish:() -> Unit)
+
+{private var timer: CountDownTimer? = null
+    fun start(){
+        val millisUntilEvent = eventTimeMillis - System.currentTimeMillis()
+
+        if (millisUntilEvent <= 0){
+                onFinish()
+                return
+            }
+    }
+}
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
