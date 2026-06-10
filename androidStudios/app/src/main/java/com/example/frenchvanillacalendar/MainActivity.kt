@@ -14,6 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import java.util.Calendar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -62,10 +68,18 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         )
     )
 
-    val monthName =  "June"
+    val monthName = "June"
     val year = 2026
-    val daysInMonth = 30
-    val startingBlankDays = 1
+    val month = Calendar.JUNE
+    var weekStartsOn by remember { mutableIntStateOf(Calendar.SUNDAY) }
+
+    val calendar = Calendar.getInstance().apply {
+        set(year, month, 1)
+    }
+
+    val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+    val startingBlankDays = (firstDayOfWeek - weekStartsOn + 7) % 7
 
     Column(modifier = modifier) {
         Text(
@@ -73,7 +87,18 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        WeekdayRow()
+        WeekdayRow(weekStartsOn = weekStartsOn)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row {
+            Button(onClick = { weekStartsOn = Calendar.SUNDAY }) {
+                Text(text = "Sunday")
+            }
+
+            Button(onClick = { weekStartsOn = Calendar.MONDAY }) {
+                Text(text = "Monday")
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -81,7 +106,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
             events = events,
             daysInMonth = daysInMonth,
             startingBlankDays = startingBlankDays
-            )
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -105,9 +130,10 @@ fun MonthGrid(
     daysInMonth: Int,
     startingBlankDays: Int
 ) {
-    val calendarSlots = List(startingBlankDays) { "" } + (1..daysInMonth).map { day -> day.toString()
+    val calendarSlots = List(startingBlankDays) { "" } + (1..daysInMonth).map { day ->
+        day.toString()
     }
-    val trailingBlankDays = (7 -calendarSlots.size % 7) % 7
+    val trailingBlankDays = (7 - calendarSlots.size % 7) % 7
     val weeks = (calendarSlots + List(trailingBlankDays) { "" }).chunked(7)
 
     Column {
@@ -123,7 +149,7 @@ fun MonthGrid(
                             text = day,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
-                         )
+                        )
                         if (eventForDay != null) {
                             Text(
                                 text = "*",
@@ -140,9 +166,12 @@ fun MonthGrid(
 }
 
 @Composable
-fun WeekdayRow() {
-    val weekdays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-
+fun WeekdayRow(weekStartsOn: Int) {
+    val weekdays = if (weekStartsOn == Calendar.MONDAY) {
+        listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    } else {
+        listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
