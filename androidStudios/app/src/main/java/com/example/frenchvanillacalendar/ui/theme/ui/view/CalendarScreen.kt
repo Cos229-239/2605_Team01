@@ -34,7 +34,9 @@ data class CalendarEvent(
 )
 
 @Composable
-fun CalendarScreen(modifier: Modifier = Modifier) {
+fun CalendarScreen(
+    modifier: Modifier = Modifier, weekStartsOn: Int
+) {
     val events = listOf(
         CalendarEvent(
             title = "Homework",
@@ -53,7 +55,6 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     val monthName = "June"
     val year = 2026
     val month = Calendar.JUNE
-    var weekStartsOn by remember { mutableIntStateOf(Calendar.SUNDAY) }
 
     val calendar = Calendar.getInstance().apply {
         set(year, month, 1)
@@ -71,16 +72,6 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
         WeekdayRow(weekStartsOn = weekStartsOn)
         Spacer(modifier = Modifier.height(8.dp))
-
-        Row {
-            Button(onClick = { weekStartsOn = Calendar.SUNDAY }) {
-                Text(text = "Sunday")
-            }
-
-            Button(onClick = { weekStartsOn = Calendar.MONDAY }) {
-                Text(text = "Monday")
-            }
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -168,6 +159,6 @@ fun WeekdayRow(weekStartsOn: Int) {
 @Composable
 fun CalendarPreview() {
     FrenchVanillaCalendarTheme {
-        CalendarScreen()
+        CalendarScreen(weekStartsOn = Calendar.SUNDAY)
     }
 }

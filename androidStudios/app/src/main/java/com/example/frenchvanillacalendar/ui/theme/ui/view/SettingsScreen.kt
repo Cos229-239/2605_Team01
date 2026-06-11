@@ -3,6 +3,8 @@ package com.example.frenchvanillacalendar.ui.theme.ui.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.Button
+import java.util.Calendar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Box
@@ -27,7 +29,10 @@ import androidx.compose.ui.res.vectorResource
 import com.example.frenchvanillacalendar.R
 
 @Composable
-fun SettingsScreen () {
+fun SettingsScreen (
+    weekStartsOn: Int,
+    onWeekStartsOnChange: (Int) -> Unit
+) {
     val scrollState = rememberScrollState()
     Column(modifier = Modifier
         .padding(top = 86.dp)
@@ -38,6 +43,11 @@ fun SettingsScreen () {
         horizontalAlignment = Alignment.Start,
     ) {
         Spacer(modifier = Modifier.height(20.dp))
+        Text(                                                               // Josh add this to test settings screen
+            text = "Settings",
+            color = Color(255,255,255),
+            modifier = Modifier.padding(start = 20.dp, bottom = 12.dp)
+        )                                                                  // Josh
         Box(modifier = Modifier
             .padding(all = 20.dp)
             .width(500.dp)
@@ -405,6 +415,21 @@ fun SettingsScreen () {
                         }
                     }
                 }
+                val weekStartOption = listOf(
+                    Calendar.SUNDAY to "Sunday",
+                    Calendar.MONDAY to "Monday",
+                    Calendar.TUESDAY to "Tuesday",
+                    Calendar.WEDNESDAY to "Wednesday",
+                    Calendar.THURSDAY to "Thursday",
+                    Calendar.FRIDAY to "Friday",
+                    Calendar.SATURDAY to "Saturday",
+                )
+                weekStartOption.forEach { option ->
+                    Button(onClick = { onWeekStartsOnChange(option.first) }) {
+                        Text(text = option.second)
+                    }
+                }
+
                 Text(
                     text = "View",
                     modifier = Modifier.padding(20.dp),
