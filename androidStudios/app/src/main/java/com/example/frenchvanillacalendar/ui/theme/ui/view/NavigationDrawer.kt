@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +50,7 @@ fun NavigationDrawer()
 
     val navController = rememberNavController()
     var selectedItemIndex by remember{ mutableIntStateOf(value = 0) }
+    var weekStartsOn by remember { mutableIntStateOf(Calendar.SUNDAY) }
 
     val items = listOf(
         drawerItems(title = "Calendar", icon = R.drawable.calendar_icon),
@@ -100,7 +102,7 @@ fun NavigationDrawer()
                                 }
 
                                 navController.navigate(route) {
-                                    popUpTo(route = navController.graph.findStartDestination().id) {
+                                    popUpTo("Calendar") {
                                         saveState = true
                                     }
                                     launchSingleTop = true
@@ -170,23 +172,25 @@ fun NavigationDrawer()
                 )
             },
 
-        ) {
-            it
-            navController.addOnDestinationChangedListener { controller, destination, arguments ->
-                selectedItemIndex = when (destination.route) {
-                    "Calendar" -> 0
-                    "Task Lists" -> 1
-                    "Countdowns" -> 2
-                    "Settings" -> 3
-                    else -> 0
+            ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = "Calendar",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable("Calendar") {
+                    CalendarScreen(weekStartsOn = weekStartsOn)
                 }
-            }
-
-            NavHost(navController = navController, startDestination = "Calendar" ){
-                composable("Calendar"){CalendarScreen()}
                 composable("Task Lists"){TaskScreen()}
                 composable("Countdowns"){CountdownScreen()}
-                composable("Settings"){SettingsScreen()}
+                composable("Settings") {
+                    SettingsScreen(
+                        weekStartsOn = weekStartsOn,
+                        onWeekStartsOnChange = { selectedDay ->
+                            weekStartsOn = selectedDay
+                        }
+                    )
+                }
             }
 
         }
