@@ -62,7 +62,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
     val startingBlankDays = (firstDayOfWeek - weekStartsOn + 7) % 7
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(top = 86.dp)) {
         Text(
             text = "$monthName $year"
         )
