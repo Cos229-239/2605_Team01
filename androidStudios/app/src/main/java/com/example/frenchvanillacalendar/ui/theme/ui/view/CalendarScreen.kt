@@ -52,50 +52,83 @@ fun CalendarScreen(
         )
     )
 
-    val monthName = "June"
-    val year = 2026
-    val month = Calendar.JUNE
+    var month by remember { mutableIntStateOf(Calendar.JUNE) }    // Tracks/Math input month
+    var year by remember { mutableIntStateOf(2026) }              // Tracks/Math input year
+    val monthNames = listOf(                                             // List of month's to display.
+        "January", "February", "March", "April", "May", "June", "July", "August", "September",
+        "October", "November", "December"
+    )
+
+    val monthName = monthNames[month]                                    // List to grab from to match month
 
     val calendar = Calendar.getInstance().apply {
         set(year, month, 1)
     }
-
+                        // Includes the tricky leap year and does math for me.
     val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
     val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
     val startingBlankDays = (firstDayOfWeek - weekStartsOn + 7) % 7
-
+                                        // Placement for header
     Column(modifier = modifier.padding(top = 86.dp)) {
-        Text(
-            text = "$monthName $year"
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+        Row(                                                        // Header is a cleaner setup
+            modifier = Modifier.fillMaxWidth(),                     // Flushed size
+            horizontalArrangement = Arrangement.SpaceBetween,       // Controls for next month
+            verticalAlignment = Alignment.CenterVertically          // Screen structure
+        ) {
+            Button(onClick = {
+                if (month == Calendar.JANUARY) {        // Loop through the months
+                    month = Calendar.DECEMBER
+                    year--                             // Moves 1 month back when hitting Jan. to Dec.
+                } else {
+                    month--
+                }
+            }) {
+                Text(text = "<")                        // < Button
+            }
 
-        WeekdayRow(weekStartsOn = weekStartsOn)
-        Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "$monthName $year")             // Display for month/year
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = {
+                if (month == Calendar.DECEMBER) {
+                    month =
+                        Calendar.JANUARY         // Moves 1 month forward when hitting Dec. to Jan.
+                    year++
+                } else {
+                    month++
+                }
+            }) {
+                Text(text = ">")                        // Forward button >
+            }
+        }
 
-        MonthGrid(
-            events = events,
-            daysInMonth = daysInMonth,
-            startingBlankDays = startingBlankDays
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            WeekdayRow(weekStartsOn = weekStartsOn)
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Calendar setup started - ${events.size} events loaded"
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        events.forEach { event ->
-            Text(
-                text = "$monthName ${event.date}, $year: ${event.title} at ${event.time}"
+            MonthGrid(
+                events = events,
+                daysInMonth = daysInMonth,
+                startingBlankDays = startingBlankDays
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Calendar setup started - ${events.size} events loaded"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            events.forEach { event ->
+                Text(
+                    text = "$monthName ${event.date}, $year: ${event.title} at ${event.time}"
+                )
+            }
         }
     }
-}
 
 @Composable
 fun MonthGrid(
@@ -140,17 +173,27 @@ fun MonthGrid(
 
 @Composable
 fun WeekdayRow(weekStartsOn: Int) {
-    val weekdays = if (weekStartsOn == Calendar.MONDAY) {
-        listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-    } else {
-        listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        weekdays.forEach { day ->
-            Text(text = day)
+    val weekdays = listOf(              // Pairing labels
+        Calendar.SUNDAY to "Sun",
+        Calendar.MONDAY to "Mon",
+        Calendar.TUESDAY to "Tue",
+        Calendar.WEDNESDAY to "Wed",
+        Calendar.THURSDAY to "Thu",
+        Calendar.FRIDAY to "Fri",
+        Calendar.SATURDAY to "Sat"
+    )
+    // start day verify with settings
+    val startIndex = weekdays.indexOfFirst { it.first == weekStartsOn }
+    // Keeps day ordered after start day determined
+    val orderedWeekdays = weekdays.drop(startIndex) + weekdays.take(startIndex)
+
+    Row(modifier = Modifier.fillMaxWidth()) {       // Flushed display
+        orderedWeekdays.forEach { day ->            // Order to follow
+            Text(
+                text = day.second,
+                textAlign = TextAlign.Center,       // Location
+                modifier = Modifier.weight(1f)      // Weekday has equal space in the row
+            )
         }
     }
 }
