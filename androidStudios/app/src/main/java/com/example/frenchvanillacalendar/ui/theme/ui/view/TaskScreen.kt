@@ -1,5 +1,7 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
@@ -20,8 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.remote.creation.dsl.first
+import androidx.compose.remote.creation.dsl.ifElse
+import androidx.compose.remote.creation.ifElse
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,9 +38,163 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.frenchvanillacalendar.R
+import java.time.LocalDate
+import java.time.LocalTime
+
+
+data class TaskCategory(
+    val title: String,
+    val color: Color,
+    val tasks: List<Task>
+)
+
+data class Task(
+    val title: String,
+    val dateDue: LocalDate,
+    val dueTime: LocalTime,
+    val timeStr: String,
+    val importance: Int
+)
+
 
 @Composable
+fun taskRow(
+    cat: TaskCategory,
+    task: Task
+) {
+    Row(
+        modifier = Modifier.padding(start = 50.dp)
+    ){
+        Text(
+            text = task.title, // change for user's task title
+            color = cat.color, // change for user's task's catagory's color
+            modifier = Modifier.padding(all = 5.dp)
+        )
+        Text(
+            text = task.timeStr, // change for user's task's time due
+            color = Color(204, 134, 255),
+            // TODO change for light or dark theme mode
+            modifier = Modifier.padding(top = 5.dp, end = 5.dp)
+        )
+        if(task.importance == 1) {
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(214, 182, 0)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+        }
+        else if (task.importance == 2){
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(161, 72, 12)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(161, 72, 12)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+        }
+        else {
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(144, 0, 0)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(144, 0, 0)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
+                contentDescription = "Importance + 1",
+                colorFilter = ColorFilter.tint(Color(144, 0, 0)),
+                // changes based on user's task's importance
+                // TODO change based on light or dark theme
+                modifier = Modifier
+                    .size(50.dp, 25.dp)
+                    .padding(top = 5.dp)
+            )
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
 fun TaskScreen () {
+    // TODO change to be the tasks the user has created
+    val cat1 = TaskCategory(
+        title = "Fun",
+        // TODO change to title user picks
+        color = Color(84, 188, 223),
+        // TODO change to color user picks
+        tasks = listOf(
+            Task(
+                title = "Go Swimming",
+                dateDue = LocalDate.of(2026, 6, 18),
+                dueTime = LocalTime.of(17, 0),
+                timeStr = "5:00pm",
+                importance = 1
+            ),
+            Task(
+                title = "Read 1 Chapter",
+                dateDue = LocalDate.of(2026, 6, 18),
+                dueTime = LocalTime.of(23, 0),
+                timeStr = "11:00pm",
+                importance = 1
+            )
+        )
+        // TODO change to tasks user has set
+    )
+    val cat2 = TaskCategory(
+        title = "School",
+        // TODO change to title user picks
+        color = Color(151, 186, 255),
+        // TODO change to color user picks
+        tasks = listOf(
+            Task(
+                title = "Calc WS",
+                dateDue = LocalDate.of(2026, 6, 19),
+                dueTime = LocalTime.of(17, 0),
+                timeStr = "5:00pm",
+                importance = 3
+            ),
+            Task(
+                title = "Code for 10 min",
+                dateDue = LocalDate.of(2026, 6, 19),
+                dueTime = LocalTime.of(16, 0),
+                timeStr = "4:00pm",
+                importance = 1
+            )
+        )
+        // TODO change to tasks user has set
+    )
     val scrollState = rememberScrollState()
     // optomize to create one for each task
     var isToggled1 by remember { mutableStateOf(false) }
@@ -55,16 +215,118 @@ fun TaskScreen () {
     } else {
         R.drawable.incomplete_task_icon
     }
+    // TODO optomize to create one for each category
+    var isToggledCat1 by remember {mutableStateOf(false)}
+
+    // TODO fix button appearance /////////////////////////////////////////////////////////////
+    val myBox1 = if (isToggledCat1) {
+        Box(
+            modifier = Modifier
+                .padding(all = 10.dp)
+                .width(80.dp)
+                .size(80.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .border(
+                    width = 2.dp,
+                    color = cat1.color // change to color user selects
+                )
+                .background(
+                    color = cat1.color
+                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cat1.title, // change to user's catigory title
+                color = Color(0, 0, 0)// change to color user selects
+            )
+        }
+    }
+    else {
+        Box(
+            modifier = Modifier
+                .padding(all = 10.dp)
+                .width(80.dp)
+                .size(80.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .border(
+                    width = 2.dp,
+                    color = cat1.color // change to color user selects
+                )
+                .background(
+                    color = Color(35, 35, 35)
+                // TODO change based on light or dark mode
+                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cat1.title, // change to user's catigory title
+                color = Color(255, 255, 255) // change to update based on bg color
+            )
+        }
+    }
+    var isToggledCat2 by remember {mutableStateOf(false)}
+    val myBox2 = if (isToggledCat2) {
+        Box(
+            modifier = Modifier
+                .padding(all = 10.dp)
+                .width(80.dp)
+                .size(80.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .border(
+                    width = 2.dp,
+                    color = cat2.color // change to color user selects
+                )
+                .background(
+                    color = cat2.color
+                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cat2.title, // change to user's catigory title
+                color = Color(0, 0, 0)// change to color user selects
+            )
+        }
+    }
+    else {
+        Box(
+            modifier = Modifier
+                .padding(all = 10.dp)
+                .width(80.dp)
+                .size(80.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .border(
+                    width = 2.dp,
+                    color = cat2.color // change to color user selects
+                )
+                .background(
+                    color = Color(35, 35, 35)
+                    // TODO change based on light or dark mode
+                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cat2.title, // change to user's catigory title
+                color = Color(255, 255, 255) // change to update based on bg color
+            )
+        }
+    }
+
     Column(modifier = Modifier
         .verticalScroll(scrollState)
-        .background(Color(29, 29, 29)) // changed based on dark or light theme
+        .background(Color(29, 29, 29))
+        // TODO change based on dark or light theme
         .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
             text = "Categories Showing",
-            color = Color(204, 134, 255), // change based on dark or light theme
+            color = Color(204, 134, 255),
+            // TODO change based on dark or light theme
             modifier = Modifier.padding(bottom = 12.dp)
         )
         Box(
@@ -72,7 +334,8 @@ fun TaskScreen () {
                 .padding(all = 20.dp)
                 .width(500.dp)
                 .size(90.dp)
-                .border(width = 2.dp, color = Color(35, 35, 35)) // change based on dark or light theme
+                .border(width = 2.dp, color = Color(35, 35, 35))
+                // TODO change based on dark or light theme
         ) {
             Row(
                 modifier = Modifier
@@ -82,35 +345,33 @@ fun TaskScreen () {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // code for boxes that show the catagories showing
-                // need to add one for each category user has set
-                Box(
-                    modifier = Modifier
-                        .padding(all = 10.dp)
-                        .width(80.dp)
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .border(width = 2.dp, color = Color(84, 188, 223)) // change to color user selects
-                        .background(color = Color(84, 188, 223)) // change to color user selects if showing
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Fun", // change to user's catigory title
-                        color = Color(0, 0, 0) // change to update based on bg color
-                    )
+                // TODO need to add one for each category user has
+                Button( onClick = { isToggledCat1 = !isToggledCat1 }) {
+                    myBox1
+                }
+                Button (onClick = {isToggledCat2 = !isToggledCat2}){
+                    myBox2
                 }
             }
         }
+
+        // TODO change to show in oder of due date and multiple cats in one
+        // day 1
         Text(
-            text = "Today, Oct. 1", // change for which day the next item is due
-            color = Color(255, 255,255) // change based on dark or light theme
+            text = "Today, June 18",
+            // TODO change for which day the next item is due
+            color = Color(255, 255,255)
+            // TODO change based on dark or light theme
         )
-        // resize and respace based on text length
+        // TODO resize and respace based on text length
+        // day 1 task 1
+        // TODO change to only show if that cat is showing
         Box(modifier = Modifier
             .padding(all = 20.dp)
             .width(500.dp)
             .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35)) // change based on dark or light theme
+            .border(width = 2.dp, color = Color(35, 35, 35))
+            // TODO change based on dark or light theme
             .fillMaxSize(),
             contentAlignment = Alignment.CenterStart
         ){
@@ -120,34 +381,17 @@ fun TaskScreen () {
                     contentDescription = "Toggle Task Completion Button"
                 )
             }
-            Row(
-                modifier = Modifier.padding(start = 50.dp)
-            ){
-                Text(
-                    text = "Go Swimming", // change for user's task title
-                    color = Color(84, 188, 223), // change for user's task's catagory's color
-                    modifier = Modifier.padding(all = 5.dp)
-                )
-                Text(
-                    text = "5:00pm", // change for user's task's time due
-                    color = Color(204, 134, 255), // change for light or dark theme mode
-                    modifier = Modifier.padding(top = 5.dp, end = 5.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(214, 182, 0)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
-                )
-            }
+            taskRow(cat1, cat1.tasks[0])
         }
+        //TODO optomize to go through all user's upcoming tasks
+        // day 1 task 2
+        // TODO change to only show if that cat is showing
         Box(modifier = Modifier
             .padding(all = 20.dp)
             .width(500.dp)
             .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35)) // change based on dark or light theme
+            .border(width = 2.dp, color = Color(35, 35, 35))
+            // TODO change based on dark or light theme
             .fillMaxSize(),
             contentAlignment = Alignment.CenterStart
         ){
@@ -157,121 +401,86 @@ fun TaskScreen () {
                     contentDescription = "Toggle Task Completion Button"
                 )
             }
-            Row(
-                modifier = Modifier.padding(start = 50.dp)
-            ){
-                Text(
-                    text = "Read 1 Chapter", // change for user's task title
-                    color = Color(84, 188, 223), // change for user's task's catagory's color
-                    modifier = Modifier.padding(all = 5.dp)
-                )
-                Text(
-                    text = "11:00pm", // change for user's task's time due
-                    color = Color(204, 134, 255), // change for light or dark theme mode
-                    modifier = Modifier.padding(all = 5.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(161, 72, 12)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(161, 72, 12)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
-                )
-            }
+            taskRow(cat1, cat1.tasks[1])
         }
+
+        // day 2
         Text(
-            text = "Tomorrow, Oct. 2", // change for which day the next item is due after one above
-            color = Color(255, 255,255) // change based on dark or light theme
+            text = "Tomorrow, June 19",
+            // TODO change for which day the next item is due after one above
+            color = Color(255, 255,255)
+            // TODO change based on dark or light theme
         )
+        // day 2 task 1
+        // TODO change to only show if that cat is showing
         Box(modifier = Modifier
             .padding(all = 20.dp)
             .width(500.dp)
             .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35)) // change based on dark or light theme
+            .border(width = 2.dp, color = Color(35, 35, 35))
+            // TODO change based on dark or light theme
             .fillMaxSize(),
             contentAlignment = Alignment.CenterStart
-        ){
-            IconButton(onClick = { isToggled3 = !isToggled3 }){
+        ) {
+            IconButton(onClick = { isToggled3 = !isToggled3 }) {
                 Image(
                     painter = painterResource(id = imageRes3),
                     contentDescription = "Toggle Task Completion Button"
                 )
             }
-            Row(
-                modifier = Modifier.padding(start = 50.dp)
-            ){
-                Text(
-                    text = "Watch A TV Show", // change for user's task title
-                    color = Color(84, 188, 223), // change for user's task's catagory's color
-                    modifier = Modifier.padding(all = 5.dp)
-                )
-                Text(
-                    text = "6:30pm", // change for user's task's time due
-                    color = Color(204, 134, 255), // change for light or dark theme mode
-                    modifier = Modifier.padding(all = 5.dp)
-                )
+            taskRow(cat2, cat2.tasks[0])
+        }
+        // day 2 task 2
+        // TODO change to only show if that cat is showing
+        Box(modifier = Modifier
+            .padding(all = 20.dp)
+            .width(500.dp)
+            .size(50.dp)
+            .border(width = 2.dp, color = Color(35, 35, 35))
+            // TODO change based on dark or light theme
+            .fillMaxSize(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            IconButton(onClick = { isToggled3 = !isToggled3 }) {
                 Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(144, 0, 0)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(144, 0, 0)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.exclimation_placeholder_icon),
-                    contentDescription = "Importance + 1",
-                    colorFilter = ColorFilter.tint(Color(144, 0, 0)), // change to be based on user's task's importance and based on light or dark theme
-                    modifier = Modifier
-                        .size(50.dp, 25.dp)
-                        .padding(top = 5.dp)
+                    painter = painterResource(id = imageRes3),
+                    contentDescription = "Toggle Task Completion Button"
                 )
             }
+            taskRow(cat2, cat2.tasks[1])
         }
-        // change size to fit screen depending on how many tasks there are
+        // TODO change size to fit screen depending on how many tasks there are
         Spacer(modifier = Modifier.height(230.dp))
-        // make into button to add task
+        // TODO make into button to add task
+
+        // add task
         Box(modifier = Modifier
             .padding(top = 20.dp, bottom = 20.dp, start = 250.dp, end = 20.dp)
             .width(150.dp)
             .size(50.dp)
             .border(width = 2.dp, color = Color(138, 138, 138, 255)) // change based on dark or light theme
-            .background(Color(102, 80, 164)) // change based on light or dark theme
+            .background(Color(102, 80, 164))
+            // TODO change based on light or dark theme
         ){
             Image(
                 painter = painterResource(id = R.drawable.plus_icon),
                 contentDescription = "Plus Sign",
-                colorFilter = ColorFilter.tint(Color(84, 188, 223)), // change to be based on user's task's importance and based on light or dark theme
+                colorFilter = ColorFilter.tint(Color(84, 188, 223)),
+                // TODO change based on light or dark theme
                 modifier = Modifier
                     .size(50.dp, 50.dp)
                     .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 5.dp)
             )
             Text(
                 text = "Add Task",
-                color = Color(84, 188, 223), // change depending on light or dark theme
+                color = Color(84, 188, 223),
+                // TODO change depending on light or dark theme
                 modifier = Modifier.fillMaxSize()
                     .padding(start = 55.dp, end = 5.dp, top = 15.dp, bottom = 15.dp)
             )
         }
-        // end button
+        // TODO end button
 
-        // add a way to delete tasks
+        // TODO add a way to delete tasks
     }
 }
