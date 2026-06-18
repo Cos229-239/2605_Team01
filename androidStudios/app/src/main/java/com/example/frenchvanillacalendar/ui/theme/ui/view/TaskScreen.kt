@@ -2,6 +2,7 @@ package com.example.frenchvanillacalendar.ui.theme.ui.view
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,20 +23,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.remote.creation.dsl.first
-import androidx.compose.remote.creation.dsl.ifElse
-import androidx.compose.remote.creation.ifElse
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.frenchvanillacalendar.R
 import java.time.LocalDate
 import java.time.LocalTime
@@ -58,10 +57,11 @@ data class Task(
 
 
 @Composable
-fun taskRow(
+fun TaskRow(
     cat: TaskCategory,
     task: Task
 ) {
+    // TODO fix spacing
     Row(
         modifier = Modifier.padding(start = 50.dp)
     ){
@@ -216,118 +216,24 @@ fun TaskScreen () {
         R.drawable.incomplete_task_icon
     }
     // TODO optomize to create one for each category
-    var isToggledCat1 by remember {mutableStateOf(false)}
+    var isToggledCat1 by remember {mutableStateOf(true)}
+    var isToggledCat2 by remember {mutableStateOf(true)}
 
-    // TODO fix button appearance /////////////////////////////////////////////////////////////
-    val myBox1 = if (isToggledCat1) {
-        Box(
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .width(80.dp)
-                .size(80.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .border(
-                    width = 2.dp,
-                    color = cat1.color // change to color user selects
-                )
-                .background(
-                    color = cat1.color
-                )
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = cat1.title, // change to user's catigory title
-                color = Color(0, 0, 0)// change to color user selects
-            )
-        }
-    }
-    else {
-        Box(
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .width(80.dp)
-                .size(80.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .border(
-                    width = 2.dp,
-                    color = cat1.color // change to color user selects
-                )
-                .background(
-                    color = Color(35, 35, 35)
-                // TODO change based on light or dark mode
-                )
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = cat1.title, // change to user's catigory title
-                color = Color(255, 255, 255) // change to update based on bg color
-            )
-        }
-    }
-    var isToggledCat2 by remember {mutableStateOf(false)}
-    val myBox2 = if (isToggledCat2) {
-        Box(
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .width(80.dp)
-                .size(80.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .border(
-                    width = 2.dp,
-                    color = cat2.color // change to color user selects
-                )
-                .background(
-                    color = cat2.color
-                )
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = cat2.title, // change to user's catigory title
-                color = Color(0, 0, 0)// change to color user selects
-            )
-        }
-    }
-    else {
-        Box(
-            modifier = Modifier
-                .padding(all = 10.dp)
-                .width(80.dp)
-                .size(80.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .border(
-                    width = 2.dp,
-                    color = cat2.color // change to color user selects
-                )
-                .background(
-                    color = Color(35, 35, 35)
-                    // TODO change based on light or dark mode
-                )
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = cat2.title, // change to user's catigory title
-                color = Color(255, 255, 255) // change to update based on bg color
-            )
-        }
-    }
-
-    Column(modifier = Modifier
-        .verticalScroll(scrollState)
-        .background(Color(29, 29, 29))
-        // TODO change based on dark or light theme
-        .fillMaxSize(),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(29, 29, 29))
+            // TODO change based on dark or light theme
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
             text = "Categories Showing",
+            fontSize = 24.sp,
             color = Color(204, 134, 255),
             // TODO change based on dark or light theme
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier.padding(top = 10.dp)
         )
         Box(
             modifier = Modifier
@@ -346,111 +252,197 @@ fun TaskScreen () {
             ) {
                 // code for boxes that show the catagories showing
                 // TODO need to add one for each category user has
-                Button( onClick = { isToggledCat1 = !isToggledCat1 }) {
-                    myBox1
+                if (isToggledCat1) {
+                    Button(
+                        onClick =  { isToggledCat1 = !isToggledCat1 },
+                        modifier = Modifier
+                            .padding(all = 5.dp)
+                            .width(100.dp)
+                            .size(100.dp)
+                            .fillMaxSize(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cat1.color // change to color user selects
+                        ),
+                        border = BorderStroke(width = 2.dp, color = cat1.color), // change to color user selects
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Text(
+                            text = cat1.title, // change to user's catigory title
+                            color = Color(0, 0, 0)// change to color user selects
+                        )
+                    }
                 }
-                Button (onClick = {isToggledCat2 = !isToggledCat2}){
-                    myBox2
+                else {
+                    Button(
+                        onClick =  { isToggledCat1 = !isToggledCat1 },
+                        modifier = Modifier
+                            .padding(all = 5.dp)
+                            .width(100.dp)
+                            .size(100.dp)
+                            .fillMaxSize(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(35, 35, 35)
+                        ),
+                        border = BorderStroke(width = 2.dp, color = cat1.color), // change to color user selects
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Text(
+                            text = cat1.title, // change to user's catigory title
+                            color = Color(255, 255, 255) // change to update based on bg color
+                        )
+                    }
+                }
+                if (isToggledCat2) {
+                    OutlinedButton(
+                        onClick =  { isToggledCat2 = !isToggledCat2 },
+                        modifier = Modifier
+                            .padding(all = 5.dp)
+                            .width(100.dp)
+                            .size(100.dp)
+                            .fillMaxSize(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cat2.color // change to color user selects
+                        ),
+                        border = BorderStroke(width = 2.dp, color = cat2.color), // change to color user selects
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Text(
+                            text = cat2.title, // change to user's catigory title
+                            color = Color(0, 0, 0)// change to color user selects
+                        )
+                    }
+                }
+                else {
+                    Button(
+                        onClick =  { isToggledCat2 = !isToggledCat2 },
+                        modifier = Modifier
+                            .padding(all = 5.dp)
+                            .width(100.dp)
+                            .size(100.dp)
+                            .fillMaxSize(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(35, 35, 35)
+                        ),
+                        border = BorderStroke(width = 2.dp, color = cat2.color), // change to color user selects
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Text(
+                            text = cat2.title, // change to user's catigory title
+                            color = Color(255, 255, 255) // change to update based on bg color
+                        )
+                    }
                 }
             }
         }
 
         // TODO change to show in oder of due date and multiple cats in one
         // day 1
-        Text(
-            text = "Today, June 18",
-            // TODO change for which day the next item is due
-            color = Color(255, 255,255)
-            // TODO change based on dark or light theme
-        )
+        if (isToggledCat1) { // temp
+            Text(
+                text = "Today, June 18",
+                // TODO change for which day the next item is due
+                color = Color(255, 255, 255)
+                // TODO change based on dark or light theme
+            )
+        }
         // TODO resize and respace based on text length
         // day 1 task 1
-        // TODO change to only show if that cat is showing
-        Box(modifier = Modifier
-            .padding(all = 20.dp)
-            .width(500.dp)
-            .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35))
-            // TODO change based on dark or light theme
-            .fillMaxSize(),
-            contentAlignment = Alignment.CenterStart
-        ){
-            IconButton(onClick = { isToggled1 = !isToggled1 }){
-                Image(
-                    painter = painterResource(id = imageRes1),
-                    contentDescription = "Toggle Task Completion Button"
-                )
+        // TODO optomize to change to only show if that cat is showing
+        if (isToggledCat1) {
+            Box(modifier = Modifier
+                .padding(all = 20.dp)
+                .width(500.dp)
+                .size(50.dp)
+                .border(width = 2.dp, color = Color(35, 35, 35))
+                // TODO change based on dark or light theme
+                .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ){
+                IconButton(onClick = { isToggled1 = !isToggled1 }){
+                    Image(
+                        painter = painterResource(id = imageRes1),
+                        contentDescription = "Toggle Task Completion Button"
+                    )
+                }
+                TaskRow(cat1, cat1.tasks[0])
             }
-            taskRow(cat1, cat1.tasks[0])
         }
         //TODO optomize to go through all user's upcoming tasks
         // day 1 task 2
-        // TODO change to only show if that cat is showing
-        Box(modifier = Modifier
-            .padding(all = 20.dp)
-            .width(500.dp)
-            .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35))
-            // TODO change based on dark or light theme
-            .fillMaxSize(),
-            contentAlignment = Alignment.CenterStart
-        ){
-            IconButton(onClick = { isToggled2 = !isToggled2 }){
-                Image(
-                    painter = painterResource(id = imageRes2),
-                    contentDescription = "Toggle Task Completion Button"
-                )
+        // TODO optomize to change to only show if that cat is showing
+        if (isToggledCat1) {
+            Box(modifier = Modifier
+                .padding(all = 20.dp)
+                .width(500.dp)
+                .size(50.dp)
+                .border(width = 2.dp, color = Color(35, 35, 35))
+                // TODO change based on dark or light theme
+                .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ){
+                IconButton(onClick = { isToggled2 = !isToggled2 }){
+                    Image(
+                        painter = painterResource(id = imageRes2),
+                        contentDescription = "Toggle Task Completion Button"
+                    )
+                }
+                TaskRow(cat1, cat1.tasks[1])
             }
-            taskRow(cat1, cat1.tasks[1])
         }
 
         // day 2
-        Text(
-            text = "Tomorrow, June 19",
-            // TODO change for which day the next item is due after one above
-            color = Color(255, 255,255)
-            // TODO change based on dark or light theme
-        )
+        if (isToggledCat2) { // temp
+            Text(
+                text = "Tomorrow, June 19",
+                // TODO change for which day the next item is due after one above
+                color = Color(255, 255, 255)
+                // TODO change based on dark or light theme
+            )
+        }
         // day 2 task 1
-        // TODO change to only show if that cat is showing
-        Box(modifier = Modifier
-            .padding(all = 20.dp)
-            .width(500.dp)
-            .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35))
-            // TODO change based on dark or light theme
-            .fillMaxSize(),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            IconButton(onClick = { isToggled3 = !isToggled3 }) {
-                Image(
-                    painter = painterResource(id = imageRes3),
-                    contentDescription = "Toggle Task Completion Button"
-                )
+        // TODO optomize to change to only show if that cat is showing
+        if (isToggledCat2) {
+            Box(modifier = Modifier
+                .padding(all = 20.dp)
+                .width(500.dp)
+                .size(50.dp)
+                .border(width = 2.dp, color = Color(35, 35, 35))
+                // TODO change based on dark or light theme
+                .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                IconButton(onClick = { isToggled3 = !isToggled3 }) {
+                    Image(
+                        painter = painterResource(id = imageRes3),
+                        contentDescription = "Toggle Task Completion Button"
+                    )
+                }
+                TaskRow(cat2, cat2.tasks[0])
             }
-            taskRow(cat2, cat2.tasks[0])
         }
         // day 2 task 2
-        // TODO change to only show if that cat is showing
-        Box(modifier = Modifier
-            .padding(all = 20.dp)
-            .width(500.dp)
-            .size(50.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35))
-            // TODO change based on dark or light theme
-            .fillMaxSize(),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            IconButton(onClick = { isToggled3 = !isToggled3 }) {
-                Image(
-                    painter = painterResource(id = imageRes3),
-                    contentDescription = "Toggle Task Completion Button"
-                )
+        // TODO optomize to change to only show if that cat is showing
+        if (isToggledCat2) {
+            Box(modifier = Modifier
+                .padding(all = 20.dp)
+                .width(500.dp)
+                .size(50.dp)
+                .border(width = 2.dp, color = Color(35, 35, 35))
+                // TODO change based on dark or light theme
+                .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                IconButton(onClick = { isToggled3 = !isToggled3 }) {
+                    Image(
+                        painter = painterResource(id = imageRes3),
+                        contentDescription = "Toggle Task Completion Button"
+                    )
+                }
+                TaskRow(cat2, cat2.tasks[1])
             }
-            taskRow(cat2, cat2.tasks[1])
         }
         // TODO change size to fit screen depending on how many tasks there are
-        Spacer(modifier = Modifier.height(230.dp))
+        Spacer(modifier = Modifier.weight(1f))
         // TODO make into button to add task
 
         // add task
