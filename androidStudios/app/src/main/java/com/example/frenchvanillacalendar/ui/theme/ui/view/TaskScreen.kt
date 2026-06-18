@@ -40,7 +40,7 @@ import com.example.frenchvanillacalendar.R
 import java.time.LocalDate
 import java.time.LocalTime
 
-
+///// TODO crop images //////////////////////////////////////////////////////////////////////////////////////////////////////
 data class TaskCategory(
     val title: String,
     val color: Color,
@@ -233,7 +233,7 @@ fun TaskScreen () {
             fontSize = 24.sp,
             color = Color(204, 134, 255),
             // TODO change based on dark or light theme
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp, start = 5.dp)
         )
         Box(
             modifier = Modifier
@@ -341,8 +341,10 @@ fun TaskScreen () {
             Text(
                 text = "Today, June 18",
                 // TODO change for which day the next item is due
-                color = Color(255, 255, 255)
+                color = Color(255, 255, 255),
                 // TODO change based on dark or light theme
+                modifier = Modifier
+                    .padding(start = 5.dp)
             )
         }
         // TODO resize and respace based on text length
@@ -395,8 +397,10 @@ fun TaskScreen () {
             Text(
                 text = "Tomorrow, June 19",
                 // TODO change for which day the next item is due after one above
-                color = Color(255, 255, 255)
+                color = Color(255, 255, 255),
                 // TODO change based on dark or light theme
+                modifier = Modifier
+                    .padding(start = 5.dp)
             )
         }
         // day 2 task 1
@@ -443,35 +447,39 @@ fun TaskScreen () {
         }
         // TODO change size to fit screen depending on how many tasks there are
         Spacer(modifier = Modifier.weight(1f))
-        // TODO make into button to add task
 
         // add task
-        Box(modifier = Modifier
-            .padding(top = 20.dp, bottom = 20.dp, start = 250.dp, end = 20.dp)
-            .width(150.dp)
-            .size(50.dp)
-            .border(width = 2.dp, color = Color(138, 138, 138, 255)) // change based on dark or light theme
-            .background(Color(102, 80, 164))
+        OutlinedButton(
+            onClick =  {  }, // add task screen///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            modifier = Modifier
+                .padding(top = 20.dp, bottom = 20.dp, start = 250.dp, end = 20.dp)
+                .size(300.dp, 50.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(102, 80, 164)
+                // TODO change based on light or dark theme
+            ),
+            border = BorderStroke(width = 2.dp, color = Color(138, 138, 138, 255)),
             // TODO change based on light or dark theme
+            shape = RoundedCornerShape(15.dp)
         ){
             Image(
                 painter = painterResource(id = R.drawable.plus_icon),
+                alignment = Alignment.CenterStart,
                 contentDescription = "Plus Sign",
+                modifier = Modifier
+                    .size(20.dp, 20.dp),
                 colorFilter = ColorFilter.tint(Color(84, 188, 223)),
                 // TODO change based on light or dark theme
-                modifier = Modifier
-                    .size(50.dp, 50.dp)
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 5.dp)
             )
+            Spacer(modifier = Modifier.width(5.dp))
             Text(
                 text = "Add Task",
+                fontSize = 15.sp,
                 color = Color(84, 188, 223),
                 // TODO change depending on light or dark theme
-                modifier = Modifier.fillMaxSize()
-                    .padding(start = 55.dp, end = 5.dp, top = 15.dp, bottom = 15.dp)
             )
         }
-        // TODO end button
 
         // TODO add a way to delete tasks
     }
