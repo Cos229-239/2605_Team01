@@ -35,7 +35,9 @@ data class CalendarEvent(
 
 @Composable
 fun CalendarScreen(
-    modifier: Modifier = Modifier, weekStartsOn: Int
+    modifier: Modifier = Modifier,      // Layout mods (parent screens)
+    weekStartsOn: Int,                  // Which week days shows first
+    weekLength: Int                     // # of days per week/row
 ) {
     val events = listOf(
         CalendarEvent(
@@ -139,8 +141,11 @@ fun MonthGrid(
     val calendarSlots = List(startingBlankDays) { "" } + (1..daysInMonth).map { day ->
         day.toString()
     }
-    val trailingBlankDays = (7 - calendarSlots.size % 7) % 7
-    val weeks = (calendarSlots + List(trailingBlankDays) { "" }).chunked(7)
+    val trailingBlankDays =                              // Calculates empty cell for final row
+        (7 - calendarSlots.size % 7) % 7
+
+    val weeks =                                         // Splits calendar cells into rows
+        (calendarSlots + List(trailingBlankDays) { "" }).chunked(7)
 
     Column {
         weeks.forEach { week ->
@@ -202,6 +207,9 @@ fun WeekdayRow(weekStartsOn: Int) {
 @Composable
 fun CalendarPreview() {
     FrenchVanillaCalendarTheme {
-        CalendarScreen(weekStartsOn = Calendar.SUNDAY)
+        CalendarScreen(
+            weekStartsOn = Calendar.SUNDAY,        // Shows previous week
+            weekLength = 7                         // Basic 7 day layout
+        )
     }
 }
