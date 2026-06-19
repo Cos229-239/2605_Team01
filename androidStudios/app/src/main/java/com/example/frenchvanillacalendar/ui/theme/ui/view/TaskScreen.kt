@@ -215,6 +215,12 @@ fun TaskScreen () {
     } else {
         R.drawable.incomplete_task_icon
     }
+    var isToggled4 by remember { mutableStateOf(false) }
+    val imageRes4 = if (isToggled4) {
+        R.drawable.complete_task_icon
+    } else {
+        R.drawable.incomplete_task_icon
+    }
     // TODO optomize to create one for each category
     var isToggledCat1 by remember {mutableStateOf(true)}
     var isToggledCat2 by remember {mutableStateOf(true)}
@@ -335,7 +341,8 @@ fun TaskScreen () {
             }
         }
 
-        // TODO change to show in oder of due date and multiple cats in one
+        // TODO change to show in order of due date and multiple cats in one
+        // TODO change to show in order of incomplete first
         // day 1
         if (isToggledCat1) { // temp
             Text(
@@ -436,9 +443,9 @@ fun TaskScreen () {
                 .fillMaxSize(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                IconButton(onClick = { isToggled3 = !isToggled3 }) {
+                IconButton(onClick = { isToggled4 = !isToggled4 }) {
                     Image(
-                        painter = painterResource(id = imageRes3),
+                        painter = painterResource(id = imageRes4),
                         contentDescription = "Toggle Task Completion Button"
                     )
                 }
