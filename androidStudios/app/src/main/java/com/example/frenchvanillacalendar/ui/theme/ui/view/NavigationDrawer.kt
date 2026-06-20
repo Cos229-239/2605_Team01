@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import java.util.Calendar
+import androidx.compose.runtime.mutableStateOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,8 @@ fun NavigationDrawer()
     val navController = rememberNavController()
     var selectedItemIndex by remember{ mutableIntStateOf(value = 0) }
     var weekStartsOn by remember { mutableIntStateOf(Calendar.SUNDAY) }
+    var weekStartDate by remember { mutableStateOf("June 1, 2026")}      // tracks start day
+    var weekLength by remember { mutableIntStateOf(7) }                  // calculates how many days a week
 
     val items = listOf(
         drawerItems(title = "Calendar", icon = R.drawable.calendar_icon),
@@ -179,15 +182,26 @@ fun NavigationDrawer()
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable("Calendar") {
-                    CalendarScreen(weekStartsOn = weekStartsOn)
+                    CalendarScreen(
+                        weekStartsOn = weekStartsOn,        // Users selected starting day
+                        weekLength = weekLength             // Days displayed for the week/row
+                    )
                 }
                 composable("Task Lists"){TaskScreen()}
                 composable("Countdowns"){CountdownScreen()}
-                composable("Settings") {
+                composable("Settings") {                        // So cool ^^^^
                     SettingsScreen(
-                        weekStartsOn = weekStartsOn,
+                        weekStartsOn = weekStartsOn,                    // Week starting point
                         onWeekStartsOnChange = { selectedDay ->
                             weekStartsOn = selectedDay
+                        },
+                        weekStartDate = weekStartDate,                  // Week start dates
+                        onWeekStartDateChange = { selectedDate ->
+                            weekStartDate = selectedDate
+                        },
+                        weekLength = weekLength,                        // Week length/adjust to user
+                        onWeekLengthChange = { selectedLength ->
+                            weekLength = selectedLength
                         }
                     )
                 }
