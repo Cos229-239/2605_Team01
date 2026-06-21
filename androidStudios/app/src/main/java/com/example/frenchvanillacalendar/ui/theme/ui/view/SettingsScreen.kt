@@ -1,5 +1,6 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
+import android.health.connect.datatypes.units.Length
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
@@ -31,9 +32,25 @@ import com.example.frenchvanillacalendar.R
 @Composable
 fun SettingsScreen (
     weekStartsOn: Int,
-    onWeekStartsOnChange: (Int) -> Unit
+    onWeekStartsOnChange: (Int) -> Unit,
+    weekStartDate: String,
+    onWeekStartDateChange: (String) -> Unit,           // Date detail display
+    weekLength: Int,
+    onWeekLengthChange: (Int) -> Unit                 // Updates days in a week!
 ) {
     val scrollState = rememberScrollState()
+
+    val selectedWeekStartLabel = when (weekStartsOn) {  // #'s to text for the settings
+        Calendar.SUNDAY -> "Sunday"
+        Calendar.MONDAY -> "Monday"
+        Calendar.TUESDAY -> "Tuesday"
+        Calendar.WEDNESDAY -> "Wednesday"
+        Calendar.THURSDAY -> "Thursday"
+        Calendar.FRIDAY -> "Friday"
+        Calendar.SATURDAY -> "Saturday"
+        else -> "Sunday"
+    }
+
     Column(modifier = Modifier
         .padding(top = 86.dp)
         .verticalScroll(scrollState)
@@ -258,7 +275,7 @@ fun SettingsScreen (
                     ){
                         Row() {
                             Text(
-                                text = "Sundays",
+                                text = weekStartDate,              // Updated to week start date
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
@@ -275,6 +292,23 @@ fun SettingsScreen (
                         }
                     }
                 }
+                Row (
+                    modifier = Modifier.padding(start = 20.dp, bottom =12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {                         // User function to start date
+                    Button(onClick = { onWeekStartDateChange("June 1, 2026") }) {
+                        Text(text = "June 1")
+                    }
+
+                    Button(onClick = { onWeekStartDateChange("June 8, 2026") }) {
+                        Text(text = "June 8")
+                    }
+
+                    Button(onClick = { onWeekStartDateChange("June 15, 2026") }) {
+                        Text(text = "June 15")
+                    }
+                }
+
                 Text(
                     text = "View",
                     modifier = Modifier.padding(20.dp),
@@ -342,7 +376,7 @@ fun SettingsScreen (
                     ){
                         Row() {
                             Text(
-                                text = "7 Days",
+                                text = "$weekLength Days",
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
@@ -357,6 +391,22 @@ fun SettingsScreen (
                                     .size(20.dp)
                             )
                         }
+                    }
+                }
+                Row(
+                    modifier = Modifier.padding(start = 20.dp, bottom = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {                         // User function to change week length
+                    Button(onClick = { onWeekLengthChange(5) }) {
+                        Text(text = "5 Days")
+                    }
+
+                    Button(onClick = { onWeekLengthChange(7) }) {
+                        Text(text = "7 Days")
+                    }
+
+                    Button(onClick = { onWeekLengthChange(10) }) {
+                        Text(text = "10 Days")
                     }
                 }
             }
@@ -398,7 +448,7 @@ fun SettingsScreen (
                     ){
                         Row() {
                             Text(
-                                text = "Sunday",
+                                text = selectedWeekStartLabel,                      // week start day
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
