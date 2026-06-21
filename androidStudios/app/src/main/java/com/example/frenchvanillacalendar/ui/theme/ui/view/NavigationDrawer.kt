@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import java.util.Calendar
@@ -149,6 +150,7 @@ fun NavigationDrawer()
                     title = {
                         Text(
                             text = screenTitle,
+                            fontSize = 30.sp,
                             modifier = Modifier.padding(end = 60.dp)
                                 .fillMaxWidth(),
                             color = Color(130, 224, 255),

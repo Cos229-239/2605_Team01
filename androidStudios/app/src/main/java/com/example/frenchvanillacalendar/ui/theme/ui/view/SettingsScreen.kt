@@ -52,7 +52,6 @@ fun SettingsScreen (
     }
 
     Column(modifier = Modifier
-        .padding(top = 86.dp)
         .verticalScroll(scrollState)
         .background(Color(29, 29, 29))
         .fillMaxSize(),
