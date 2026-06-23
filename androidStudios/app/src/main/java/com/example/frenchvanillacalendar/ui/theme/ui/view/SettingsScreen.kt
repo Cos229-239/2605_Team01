@@ -309,7 +309,6 @@ fun SettingsScreen (
                         .width(200.dp)
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
-                        .clickable { weekStartDateMenuExpanded = true } // Opens start date options
                     ) {
                         Row() {
                             Text(
@@ -320,11 +319,11 @@ fun SettingsScreen (
                                         top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp
+                                        end = 15.dp
                                     )
                             )
                             Button(
-                                onClick = { expandMonthStartDay = true },
+                                onClick = { weekStartDateMenuExpanded = true },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(29, 29, 29)
                                 )
@@ -336,60 +335,6 @@ fun SettingsScreen (
                                         .size(20.dp)
                                 )
                             }
-                        }
-                        DropdownMenu(
-                            expanded = expandMonthStartDay,
-                            onDismissRequest = { expandMonthStartDay = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Sunday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Sunday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Monday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Monday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Tuesday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Tuesday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Wednesday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Wednesday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Thursday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Thursday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Friday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Friday")
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Saturday") },
-                                onClick = {
-                                    expandMonthStartDay = false
-                                    onWeekStartDateChange("Saturday")
-                                }
-                            )
                         }
                         DropdownMenu(
                             expanded = weekStartDateMenuExpanded,
@@ -477,7 +422,6 @@ fun SettingsScreen (
                         .width(200.dp)
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
-                        .clickable { weekLengthMenuExpanded = true }            // Opens/Expand when selected
                     ){
                         Row() {
                             Text(                                    // Single days to multiple day reply.
@@ -490,7 +434,7 @@ fun SettingsScreen (
                                         end = 55.dp)
                             )
                             Button(
-                                onClick = { expandMonthWeekLength = true },
+                                onClick = { weekLengthMenuExpanded = true },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(29, 29, 29)
                                 )
@@ -502,32 +446,6 @@ fun SettingsScreen (
                                         .size(20.dp)
                                 )
                             }
-                        }
-                        DropdownMenu(
-                            expanded = expandMonthWeekLength,
-                            onDismissRequest = { expandMonthWeekLength = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("5 Days") },
-                                onClick = {
-                                    expandMonthWeekLength = false
-                                    onWeekLengthChange(5)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("7 Days") },
-                                onClick = {
-                                    expandMonthWeekLength = false
-                                    onWeekLengthChange(7)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("10 Days") },
-                                onClick = {
-                                    expandMonthWeekLength = false
-                                    onWeekLengthChange(10)
-                                }
-                            )
                         }
                         DropdownMenu(                           //  Display wee-length choices
                             expanded = weekLengthMenuExpanded,
@@ -702,6 +620,7 @@ fun SettingsScreen (
                                         bottom = 10.dp,
                                         end = 80.dp)
                             )
+                            // TODO make into button
                             Image(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
                                 contentDescription = null,

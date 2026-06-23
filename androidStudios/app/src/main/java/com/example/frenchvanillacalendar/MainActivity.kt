@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.frenchvanillacalendar.ui.theme.ui.view.NavigationDrawer
 import com.example.frenchvanillacalendar.ui.theme.FrenchVanillaCalendarTheme
 import android.os.CountDownTimer //import the countdown timer
 
@@ -21,23 +22,22 @@ class EventCountdownTimer(private val eventTimeMillis: Long,
                 onFinish()
                 return
             }
-        timer = object: CountDownTimeer(millisUntilEvent, 1000L)
-        {
-            override fun onTick(millisUntilFinished: Long)
-            {
-                val days = millisUntilFinished / (1000 * 60 * 60 *24)
-                val hours = (millisUntilFinished / (1000 * 60 * 60)) % 24
-                val minutes = (millisUntilFinished /(1000 * 60)) % 60
-                val seconds = (millisUntilFinished / 1000) % 60
-                onTick(days, hours, minutes, seconds)
-            }
-        }
+//        timer = object: CountDownTimeer(millisUntilEvent, 1000L)
+//        {
+//            override fun onTick(millisUntilFinished: Long)
+//            {
+//                val days = millisUntilFinished / (1000 * 60 * 60 *24)
+//                val hours = (millisUntilFinished / (1000 * 60 * 60)) % 24
+//                val minutes = (millisUntilFinished /(1000 * 60)) % 60
+//                val seconds = (millisUntilFinished / 1000) % 60
+//                onTick(days, hours, minutes, seconds)
+//            }
+//        }
 
     }
 }
 
 
-import com.example.frenchvanillacalendar.ui.theme.ui.view.NavigationDrawer
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
