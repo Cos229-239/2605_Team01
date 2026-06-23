@@ -55,6 +55,9 @@ fun NavigationDrawer()
     var weekStartsOn by remember { mutableIntStateOf(Calendar.SUNDAY) }
     var weekStartDate by remember { mutableStateOf("June 1, 2026")}      // tracks start day
     var weekLength by remember { mutableIntStateOf(7) }                  // calculates how many days a week
+    var selectedMonth by remember { mutableIntStateOf(Calendar.JUNE) }  // Calendar month shares with settings
+    var selectedYear by remember { mutableIntStateOf(2026) }            // Calendar year shares with settings
+
 
     val items = listOf(
         drawerItems(title = "Calendar", icon = R.drawable.calendar_icon),
@@ -186,12 +189,32 @@ fun NavigationDrawer()
                 composable("Calendar") {
                     CalendarScreen(
                         weekStartsOn = weekStartsOn,        // Users selected starting day
-                        weekLength = weekLength             // Days displayed for the week/row
+                        weekLength = weekLength,             // Days displayed for the week/row
+                        month = selectedMonth,
+                        year = selectedYear,
+                        weekStartDate = weekStartDate,
+                        onPreviousMonth = {
+                            if (selectedMonth == Calendar.JANUARY) {
+                                selectedMonth = Calendar.DECEMBER
+                                selectedYear--
+                            } else {
+                                selectedMonth--
+                            }
+                        },
+                        onNextMonth = {
+                            if (selectedMonth == Calendar.DECEMBER) {
+                                selectedMonth = Calendar.JANUARY
+                                selectedYear++
+                            } else {
+                                selectedMonth++
+                            }
+                        }
                     )
                 }
                 composable("Task Lists"){TaskScreen()}
                 composable("Countdowns"){CountdownScreen()}
                 composable("Settings") {                        // So cool ^^^^
+
                     SettingsScreen(
                         weekStartsOn = weekStartsOn,                    // Week starting point
                         onWeekStartsOnChange = { selectedDay ->
@@ -204,7 +227,9 @@ fun NavigationDrawer()
                         weekLength = weekLength,                        // Week length/adjust to user
                         onWeekLengthChange = { selectedLength ->
                             weekLength = selectedLength
-                        }
+                        },
+                        selectedMonth = selectedMonth,                  // Connects to calendar settings
+                        selectedYear = selectedYear
                     )
                 }
             }

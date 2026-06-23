@@ -1,10 +1,16 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
-import android.health.connect.datatypes.units.Length
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import java.util.Calendar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Modifier
@@ -36,9 +42,30 @@ fun SettingsScreen (
     weekStartDate: String,
     onWeekStartDateChange: (String) -> Unit,           // Date detail display
     weekLength: Int,
-    onWeekLengthChange: (Int) -> Unit                 // Updates days in a week!
+    onWeekLengthChange: (Int) -> Unit,                 // Updates days in a week!
+    selectedMonth: Int,
+    selectedYear: Int
 ) {
     val scrollState = rememberScrollState()
+                                                                    // dropdown detection
+    var weekStartDateMenuExpanded by remember { mutableStateOf(false) }
+    var weekLengthMenuExpanded by remember { mutableStateOf(false) }
+
+    val monthNames = listOf(
+        "January", "February", "March", "April", "May", "June", "July", "August", "September",
+        "October", "November", "December"
+    )
+
+    val selectedMonthName = monthNames[selectedMonth]
+    val selectedMonthCalendar = Calendar.getInstance().apply {
+        set(selectedYear, selectedMonth, 1)
+    }
+
+    val daysInSelectedMonth = selectedMonthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) // Pulls info/calculation
+
+    val weekStartDateOptions = (1..daysInSelectedMonth).map { day ->
+        "$selectedMonthName $day, $selectedYear"
+    }
 
     val selectedWeekStartLabel = when (weekStartsOn) {  // #'s to text for the settings
         Calendar.SUNDAY -> "Sunday"
@@ -271,16 +298,19 @@ fun SettingsScreen (
                         .width(200.dp)
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
-                    ){
+                        .clickable { weekStartDateMenuExpanded = true } // Opens start date options
+                    ) {
                         Row() {
                             Text(
                                 text = weekStartDate,              // Updated to week start date
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
-                                    .padding(top = 10.dp,
+                                    .padding(
+                                        top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp)
+                                        end = 80.dp
+                                    )
                             )
                             Image(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
@@ -289,22 +319,24 @@ fun SettingsScreen (
                                     .size(20.dp)
                             )
                         }
-                    }
-                }
-                Row (
-                    modifier = Modifier.padding(start = 20.dp, bottom =12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {                         // User function to start date
-                    Button(onClick = { onWeekStartDateChange("June 1, 2026") }) {
-                        Text(text = "June 1")
-                    }
-
-                    Button(onClick = { onWeekStartDateChange("June 8, 2026") }) {
-                        Text(text = "June 8")
-                    }
-
-                    Button(onClick = { onWeekStartDateChange("June 15, 2026") }) {
-                        Text(text = "June 15")
+                        DropdownMenu(
+                            expanded = weekStartDateMenuExpanded,
+                            onDismissRequest = {
+                                weekStartDateMenuExpanded = false
+                            }
+                        ) {
+                            weekStartDateOptions.forEach { dateOption ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = dateOption)
+                                    },
+                                    onClick = {
+                                        onWeekStartDateChange(dateOption)
+                                        weekStartDateMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -372,10 +404,11 @@ fun SettingsScreen (
                         .width(200.dp)
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
+                        .clickable { weekLengthMenuExpanded = true }            // Opens/Expand when selected
                     ){
                         Row() {
-                            Text(
-                                text = "$weekLength Days",
+                            Text(                                    // Single days to multiple day reply.
+                                text = if (weekLength == 1) "1 Day" else "$weekLength Days",
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
@@ -390,22 +423,26 @@ fun SettingsScreen (
                                     .size(20.dp)
                             )
                         }
-                    }
-                }
-                Row(
-                    modifier = Modifier.padding(start = 20.dp, bottom = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {                         // User function to change week length
-                    Button(onClick = { onWeekLengthChange(5) }) {
-                        Text(text = "5 Days")
-                    }
-
-                    Button(onClick = { onWeekLengthChange(7) }) {
-                        Text(text = "7 Days")
-                    }
-
-                    Button(onClick = { onWeekLengthChange(10) }) {
-                        Text(text = "10 Days")
+                        DropdownMenu(                           //  Display wee-length choices
+                            expanded = weekLengthMenuExpanded,
+                            onDismissRequest = {
+                                weekLengthMenuExpanded = false  // Close button (outside click)
+                            }
+                        ) {                                     // Dropdown for every option 1-10
+                            (1..10).forEach { length ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(       //  Displays current option with grammar check
+                                            text = if (length == 1) "1 Day" else "$length Days"
+                                        )
+                                    },
+                                    onClick = {
+                                        onWeekLengthChange(length)      // Saves length and closes
+                                        weekLengthMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
