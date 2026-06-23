@@ -2,7 +2,6 @@ package com.example.frenchvanillacalendar.ui.theme.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import java.util.Calendar
-import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Box
@@ -32,12 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.frenchvanillacalendar.R
@@ -57,6 +50,12 @@ fun SettingsScreen (
                                                                     // dropdown detection
     var weekStartDateMenuExpanded by remember { mutableStateOf(false) }
     var weekLengthMenuExpanded by remember { mutableStateOf(false) }
+    var monthViewExpanded by remember { mutableStateOf(false) }
+    var weekViewExpanded by remember { mutableStateOf(false) }
+
+    // TODO change to function
+    var monthViewSelected = "Day/Details"
+    var weekViewSelected = "Details"
 
     val monthNames = listOf(
         "January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -74,8 +73,6 @@ fun SettingsScreen (
         "$selectedMonthName $day, $selectedYear"
     }
 
-    var expandMonthStartDay by remember {mutableStateOf(false)}
-    var expandMonthWeekLength by remember {mutableStateOf(false)}
     var expandWeekStartDay by remember {mutableStateOf(false)}
 
     val selectedWeekStartLabel = when (weekStartsOn) {  // #'s to text for the settings
@@ -310,7 +307,7 @@ fun SettingsScreen (
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
                     ) {
-                        Row() {
+                        Row {
                             Text(
                                 text = weekStartDate,              // Updated to week start date
                                 color = Color(255, 255, 255),
@@ -369,12 +366,13 @@ fun SettingsScreen (
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.calendar_view_day),
-                        contentDescription = null,
-                        modifier = Modifier.padding(10.dp)
-                            .size(20.dp)
-                    )
+                    // TODO change image based on which view is selected
+//                    Image(
+//                        imageVector = ImageVector.vectorResource(id = R.drawable.calendar_view_day),
+//                        contentDescription = null,
+//                        modifier = Modifier.padding(10.dp)
+//                            .size(20.dp)
+//                    )
                     Box(modifier = Modifier
                         .width(200.dp)
                         .size(50.dp)
@@ -382,20 +380,51 @@ fun SettingsScreen (
                     ){
                         Row{
                             Text(
-                                text = "Day/Details",
+                                text = monthViewSelected,
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 45.dp)
+                                        end = 15.dp)
                             )
-                            // TODO make button
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
+                            Button(
+                                onClick = { monthViewExpanded = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(29, 29, 29)
+                                )
+                            ) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
+                        }
+                        DropdownMenu(
+                            expanded = monthViewExpanded,
+                            onDismissRequest = {
+                                monthViewExpanded = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Day/Details")
+                                },
+                                onClick = {
+                                    monthViewSelected = "Day/Details"
+                                    monthViewExpanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Icons & Content")
+                                },
+                                onClick = {
+                                    monthViewSelected = "Icons & Content"
+                                    monthViewExpanded = false
+                                }
                             )
                         }
                     }
@@ -423,7 +452,7 @@ fun SettingsScreen (
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
                     ){
-                        Row() {
+                        Row {
                             Text(                                    // Single days to multiple day reply.
                                 text = if (weekLength == 1) "1 Day" else "$weekLength Days",
                                 color = Color(255, 255, 255),
@@ -612,20 +641,51 @@ fun SettingsScreen (
                     ){
                         Row {
                             Text(
-                                text = "Details",
+                                text = weekViewSelected,
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp)
+                                        end = 10.dp)
                             )
-                            // TODO make into button
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
+                            Button(
+                                onClick = { weekViewExpanded = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(29, 29, 29)
+                                )
+                            ) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
+                        }
+                        DropdownMenu(
+                            expanded = weekViewExpanded,
+                            onDismissRequest = {
+                                weekViewExpanded = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Details")
+                                },
+                                onClick = {
+                                    weekViewSelected = "Details"
+                                    weekViewExpanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Icons & Content")
+                                },
+                                onClick = {
+                                    weekViewSelected = "Icons & Content"
+                                    weekViewExpanded = false
+                                }
                             )
                         }
                     }
