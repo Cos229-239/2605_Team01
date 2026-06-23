@@ -2,8 +2,15 @@ package com.example.frenchvanillacalendar.ui.theme.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import java.util.Calendar
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Arrangement
@@ -42,9 +49,30 @@ fun SettingsScreen (
     weekStartDate: String,
     onWeekStartDateChange: (String) -> Unit,           // Date detail display
     weekLength: Int,
-    onWeekLengthChange: (Int) -> Unit                 // Updates days in a week!
+    onWeekLengthChange: (Int) -> Unit,                 // Updates days in a week!
+    selectedMonth: Int,
+    selectedYear: Int
 ) {
     val scrollState = rememberScrollState()
+                                                                    // dropdown detection
+    var weekStartDateMenuExpanded by remember { mutableStateOf(false) }
+    var weekLengthMenuExpanded by remember { mutableStateOf(false) }
+
+    val monthNames = listOf(
+        "January", "February", "March", "April", "May", "June", "July", "August", "September",
+        "October", "November", "December"
+    )
+
+    val selectedMonthName = monthNames[selectedMonth]
+    val selectedMonthCalendar = Calendar.getInstance().apply {
+        set(selectedYear, selectedMonth, 1)
+    }
+
+    val daysInSelectedMonth = selectedMonthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) // Pulls info/calculation
+
+    val weekStartDateOptions = (1..daysInSelectedMonth).map { day ->
+        "$selectedMonthName $day, $selectedYear"
+    }
 
     var expandMonthStartDay by remember {mutableStateOf(false)}
     var expandMonthWeekLength by remember {mutableStateOf(false)}
@@ -277,13 +305,13 @@ fun SettingsScreen (
                             .size(20.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Box(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .size(50.dp)
-                            .border(width = 2.dp, color = Color(35, 35, 35))
+                    Box(modifier = Modifier
+                        .width(200.dp)
+                        .size(50.dp)
+                        .border(width = 2.dp, color = Color(35, 35, 35))
+                        .clickable { weekStartDateMenuExpanded = true } // Opens start date options
                     ) {
-                        Row{
+                        Row() {
                             Text(
                                 text = weekStartDate,              // Updated to week start date
                                 color = Color(255, 255, 255),
@@ -291,7 +319,8 @@ fun SettingsScreen (
                                     .padding(
                                         top = 10.dp,
                                         start = 10.dp,
-                                        bottom = 10.dp
+                                        bottom = 10.dp,
+                                        end = 80.dp
                                     )
                             )
                             Button(
@@ -362,6 +391,24 @@ fun SettingsScreen (
                                 }
                             )
                         }
+                        DropdownMenu(
+                            expanded = weekStartDateMenuExpanded,
+                            onDismissRequest = {
+                                weekStartDateMenuExpanded = false
+                            }
+                        ) {
+                            weekStartDateOptions.forEach { dateOption ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = dateOption)
+                                    },
+                                    onClick = {
+                                        onWeekStartDateChange(dateOption)
+                                        weekStartDateMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -430,10 +477,11 @@ fun SettingsScreen (
                         .width(200.dp)
                         .size(50.dp)
                         .border(width = 2.dp, color = Color(35, 35, 35))
+                        .clickable { weekLengthMenuExpanded = true }            // Opens/Expand when selected
                     ){
-                        Row {
-                            Text(
-                                text = "$weekLength Days",
+                        Row() {
+                            Text(                                    // Single days to multiple day reply.
+                                text = if (weekLength == 1) "1 Day" else "$weekLength Days",
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(top = 10.dp,
@@ -480,6 +528,26 @@ fun SettingsScreen (
                                     onWeekLengthChange(10)
                                 }
                             )
+                        }
+                        DropdownMenu(                           //  Display wee-length choices
+                            expanded = weekLengthMenuExpanded,
+                            onDismissRequest = {
+                                weekLengthMenuExpanded = false  // Close button (outside click)
+                            }
+                        ) {                                     // Dropdown for every option 1-10
+                            (1..10).forEach { length ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(       //  Displays current option with grammar check
+                                            text = if (length == 1) "1 Day" else "$length Days"
+                                        )
+                                    },
+                                    onClick = {
+                                        onWeekLengthChange(length)      // Saves length and closes
+                                        weekLengthMenuExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }

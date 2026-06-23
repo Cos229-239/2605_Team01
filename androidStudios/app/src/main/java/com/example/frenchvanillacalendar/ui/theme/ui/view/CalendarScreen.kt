@@ -1,11 +1,8 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +30,12 @@ data class CalendarEvent(
 fun CalendarScreen(
     modifier: Modifier = Modifier,      // Layout mods (parent screens)
     weekStartsOn: Int,                  // Which week days shows first
-    weekLength: Int                     // # of days per week/row
+    weekLength: Int,                     // # of days per week/row
+    month: Int,                         // Month from shared navs.
+    year: Int,
+    weekStartDate: String,              // picked start date from settings
+    onPreviousMonth: () -> Unit,        // Moves back a month
+    onNextMonth: () -> Unit,
 ) {
     val events = listOf(
         CalendarEvent(
@@ -54,8 +52,6 @@ fun CalendarScreen(
         )
     )
 
-    var month by remember { mutableIntStateOf(Calendar.JUNE) }    // Tracks/Math input month
-    var year by remember { mutableIntStateOf(2026) }              // Tracks/Math input year
     val monthNames = listOf(                                             // List of month's to display.
         "January", "February", "March", "April", "May", "June", "July", "August", "September",
         "October", "November", "December"
@@ -77,28 +73,12 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.SpaceBetween,       // Controls for next month
             verticalAlignment = Alignment.CenterVertically          // Screen structure
         ) {
-            Button(onClick = {
-                if (month == Calendar.JANUARY) {        // Loop through the months
-                    month = Calendar.DECEMBER
-                    year--                             // Moves 1 month back when hitting Jan. to Dec.
-                } else {
-                    month--
-                }
-            }) {
-                Text(text = "<")                        // < Button
+            Button(onClick = onPreviousMonth) {
+                Text(text = "<")                        // < Button function
             }
 
-            Text(text = "$monthName $year")             // Display for month/year
-
-            Button(onClick = {
-                if (month == Calendar.DECEMBER) {
-                    month =
-                        Calendar.JANUARY         // Moves 1 month forward when hitting Dec. to Jan.
-                    year++
-                } else {
-                    month++
-                }
-            }) {
+            Text(text = "$monthName $year")
+            Button(onClick = onNextMonth) {
                 Text(text = ">")                        // Forward button >
             }
         }
@@ -117,6 +97,13 @@ fun CalendarScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Week starts: $weekStartDate"
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
 
             Text(
                 text = "Calendar setup started - ${events.size} events loaded"
@@ -209,7 +196,12 @@ fun CalendarPreview() {
     FrenchVanillaCalendarTheme {
         CalendarScreen(
             weekStartsOn = Calendar.SUNDAY,        // Shows previous week
-            weekLength = 7                         // Basic 7 day layout
+            weekLength = 7,                         // Basic 7 day layout
+            month = Calendar.JUNE,
+            year = 2026,
+            weekStartDate = "June 1, 2026",
+            onPreviousMonth = {},                   // Testing > < functions
+            onNextMonth = {}
         )
     }
 }
