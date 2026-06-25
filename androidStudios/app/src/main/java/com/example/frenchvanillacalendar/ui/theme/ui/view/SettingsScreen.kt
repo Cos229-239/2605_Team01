@@ -1,5 +1,6 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
+import android.provider.CalendarContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,12 +45,16 @@ fun SettingsScreen (
     weekLength: Int,
     onWeekLengthChange: (Int) -> Unit,                 // Updates days in a week!
     selectedMonth: Int,
-    selectedYear: Int
+    selectedYear: Int,
+    selectedVisibleDays: Set<Int>,
+    onSelectedVisibleDaysChange: (Set<Int>) -> Unit
 ) {
     val scrollState = rememberScrollState()
                                                                     // dropdown detection
     var weekStartDateMenuExpanded by remember { mutableStateOf(false) }
     var weekLengthMenuExpanded by remember { mutableStateOf(false) }
+    var weekStartDayMenuExpanded by remember { mutableStateOf(false) }
+    var daysShownMenuExpanded by remember { mutableStateOf(false) }
 
     val monthNames = listOf(
         "January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -76,6 +81,35 @@ fun SettingsScreen (
         Calendar.FRIDAY -> "Friday"
         Calendar.SATURDAY -> "Saturday"
         else -> "Sunday"
+    }
+
+    val weekStartOption = listOf(
+        Calendar.SUNDAY to "Sunday",
+        Calendar.MONDAY to "Monday",
+        Calendar.TUESDAY to "Tuesday",
+        Calendar.WEDNESDAY to "Wednesday",
+        Calendar.THURSDAY to "Thursday",
+        Calendar.FRIDAY to "Friday",
+        Calendar.SATURDAY to "Saturday",
+    )
+
+    val visibleDayOptions = listOf(
+        Calendar.SUNDAY to "Sun",
+        Calendar.MONDAY to "Mon",
+        Calendar.TUESDAY to "Tue",
+        Calendar.WEDNESDAY to "Wed",
+        Calendar.THURSDAY to "Thu",
+        Calendar.FRIDAY to "Fri",
+        Calendar.SATURDAY to "Sat",
+    )
+
+    val selectedVisibleDaysLabel = if (selectedVisibleDays.size == visibleDayOptions.size) {
+        "All Days"
+    } else {
+        visibleDayOptions
+            .filter { option -> option.first in selectedVisibleDays }
+            .joinToString(", ") { option -> option.second }
+            .ifBlank { "No Days" }
     }
 
     Column(modifier = Modifier
@@ -274,7 +308,7 @@ fun SettingsScreen (
             .padding(start = 50.dp, end = 50.dp)
             .width(500.dp)
             .border(width = 2.dp, color = Color(35, 35, 35))
-        ){
+        ) {
             Column() {
                 Text(
                     text = "Start Day",
@@ -295,11 +329,14 @@ fun SettingsScreen (
                             .size(20.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                        .clickable { weekStartDateMenuExpanded = true } // Opens start date options
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .size(50.dp)
+                            .border(width = 2.dp, color = Color(35, 35, 35))
+                            .clickable {
+                                weekStartDateMenuExpanded = true
+                            } // Opens start date options
                     ) {
                         Row() {
                             Text(
@@ -359,20 +396,23 @@ fun SettingsScreen (
                         modifier = Modifier.padding(10.dp)
                             .size(20.dp)
                     )
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                    ){
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .size(50.dp)
+                            .border(width = 2.dp, color = Color(35, 35, 35))
+                    ) {
                         Row() {
                             Text(
                                 text = "Day/Details",
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
-                                    .padding(top = 10.dp,
+                                    .padding(
+                                        top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 45.dp)
+                                        end = 45.dp
+                                    )
                             )
                             Image(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
@@ -383,6 +423,89 @@ fun SettingsScreen (
                         }
                     }
                 }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Appearance of Week",
+            color = Color(204, 134, 255)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(modifier = Modifier
+            .padding(start = 50.dp, end = 50.dp, bottom = 10.dp)
+            .width(500.dp)
+            .border(width = 2.dp, color = Color(35, 35, 35))
+        ){
+            Column() {
+                Text(
+                    text = "Start Day",
+                    modifier = Modifier.padding(20.dp),
+                    color = Color(255, 255, 255)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 20.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.edit_calendar_placeholder),
+                        contentDescription = null,
+                        modifier = Modifier.padding(10.dp)
+                            .size(20.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                        .width(200.dp)
+                        .size(50.dp)
+                        .border(width = 2.dp, color = Color(35, 35, 35))
+                        .clickable {
+                            weekStartDayMenuExpanded = true
+                        } // Opens weekly start day options
+                    ) {
+                        Row() {
+                            Text(
+                                text = selectedWeekStartLabel,                      // week start day
+                                color = Color(255, 255, 255),
+                                modifier = Modifier
+                                    .padding(
+                                        top = 10.dp,
+                                        start = 10.dp,
+                                        bottom = 10.dp,
+                                        end = 80.dp
+                                    )
+                            )
+                            Image(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                contentDescription = null,
+                                modifier = Modifier.padding(15.dp)
+                                    .size(20.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = weekStartDayMenuExpanded,
+                            onDismissRequest = {
+                                weekStartDayMenuExpanded = false
+                            }
+                        ) {
+                            weekStartOption.forEach { option ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = option.second)
+                                    },
+                                    onClick = {
+                                        onWeekStartsOnChange(option.first)
+                                        weekStartDayMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Text(
                     text = "Week Length",
                     modifier = Modifier.padding(20.dp),
@@ -429,8 +552,8 @@ fun SettingsScreen (
                             onDismissRequest = {
                                 weekLengthMenuExpanded = false  // Close button (outside click)
                             }
-                        ) {                                     // Dropdown for every option 1-10
-                            (1..10).forEach { length ->
+                        ) {                                     // Dropdown for every option 1-7
+                            (1..7).forEach { length ->
                                 DropdownMenuItem(
                                     text = {
                                         Text(       //  Displays current option with grammar check
@@ -446,25 +569,13 @@ fun SettingsScreen (
                         }
                     }
                 }
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Appearance of Week",
-            color = Color(204, 134, 255)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(modifier = Modifier
-            .padding(start = 50.dp, end = 50.dp, bottom = 10.dp)
-            .width(500.dp)
-            .border(width = 2.dp, color = Color(35, 35, 35))
-        ){
-            Column() {
+
                 Text(
-                    text = "Start Day",
+                    text = "Days Shown",
                     modifier = Modifier.padding(20.dp),
                     color = Color(255, 255, 255)
                 )
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -478,21 +589,27 @@ fun SettingsScreen (
                         modifier = Modifier.padding(10.dp)
                             .size(20.dp)
                     )
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                    ){
+
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .size(50.dp)
+                            .border(width = 2.dp, color = Color(35, 35, 35))
+                            .clickable { daysShownMenuExpanded = true } // Opens visible day options
+                    ) {
                         Row() {
                             Text(
-                                text = selectedWeekStartLabel,                      // week start day
+                                text = selectedVisibleDaysLabel,
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
-                                    .padding(top = 10.dp,
+                                    .padding(
+                                        top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp)
+                                        end = 30.dp
+                                    )
                             )
+
                             Image(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
                                 contentDescription = null,
@@ -500,20 +617,32 @@ fun SettingsScreen (
                                     .size(20.dp)
                             )
                         }
-                    }
-                }
-                val weekStartOption = listOf(
-                    Calendar.SUNDAY to "Sunday",
-                    Calendar.MONDAY to "Monday",
-                    Calendar.TUESDAY to "Tuesday",
-                    Calendar.WEDNESDAY to "Wednesday",
-                    Calendar.THURSDAY to "Thursday",
-                    Calendar.FRIDAY to "Friday",
-                    Calendar.SATURDAY to "Saturday",
-                )
-                weekStartOption.forEach { option ->
-                    Button(onClick = { onWeekStartsOnChange(option.first) }) {
-                        Text(text = option.second)
+
+                        DropdownMenu(
+                            expanded = daysShownMenuExpanded,
+                            onDismissRequest = {
+                                daysShownMenuExpanded = false
+                            }
+                        ) {
+                            visibleDayOptions.forEach { option ->
+                                val isSelected = option.first in selectedVisibleDays
+
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = if (isSelected) "${option.second} On" else option.second)
+                                    },
+                                    onClick = {
+                                        val updatedDays = if (isSelected) {
+                                            selectedVisibleDays - option.first
+                                        } else {
+                                            selectedVisibleDays + option.first
+                                        }
+
+                                        onSelectedVisibleDaysChange(updatedDays)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
 

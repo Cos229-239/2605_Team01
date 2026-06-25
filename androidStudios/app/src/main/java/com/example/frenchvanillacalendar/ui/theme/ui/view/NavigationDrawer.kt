@@ -56,7 +56,19 @@ fun NavigationDrawer()
     var weekLength by remember { mutableIntStateOf(7) }                  // calculates how many days a week
     var selectedMonth by remember { mutableIntStateOf(Calendar.JUNE) }  // Calendar month shares with settings
     var selectedYear by remember { mutableIntStateOf(2026) }            // Calendar year shares with settings
-
+    var selectedVisibleDays by remember {                                       // Days displayed
+        mutableStateOf(
+            setOf(
+                Calendar.SUNDAY,
+                Calendar.MONDAY,
+                Calendar.TUESDAY,
+                Calendar.WEDNESDAY,
+                Calendar.THURSDAY,
+                Calendar.FRIDAY,
+                Calendar.SATURDAY
+            )
+        )
+    }
 
     val items = listOf(
         drawerItems(title = "Calendar", icon = R.drawable.calendar_icon),
@@ -191,6 +203,7 @@ fun NavigationDrawer()
                         month = selectedMonth,
                         year = selectedYear,
                         weekStartDate = weekStartDate,
+                        selectedVisibleDays = selectedVisibleDays,  // Adding visible day functions
                         onPreviousMonth = {
                             if (selectedMonth == Calendar.JANUARY) {
                                 selectedMonth = Calendar.DECEMBER
@@ -227,7 +240,11 @@ fun NavigationDrawer()
                             weekLength = selectedLength
                         },
                         selectedMonth = selectedMonth,                  // Connects to calendar settings
-                        selectedYear = selectedYear
+                        selectedYear = selectedYear,
+                        selectedVisibleDays = selectedVisibleDays,
+                        onSelectedVisibleDaysChange = { newVisibleDays ->
+                            selectedVisibleDays = newVisibleDays
+                        }
                     )
                 }
             }
