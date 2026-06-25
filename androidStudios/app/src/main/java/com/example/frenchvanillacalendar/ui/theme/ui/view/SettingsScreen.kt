@@ -1,9 +1,7 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
-import android.provider.CalendarContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,10 +29,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.frenchvanillacalendar.R
+import androidx.compose.foundation.clickable
 
 @Composable
 fun SettingsScreen (
@@ -55,6 +55,11 @@ fun SettingsScreen (
     var weekLengthMenuExpanded by remember { mutableStateOf(false) }
     var weekStartDayMenuExpanded by remember { mutableStateOf(false) }
     var daysShownMenuExpanded by remember { mutableStateOf(false) }
+    var monthViewExpanded by remember { mutableStateOf(false) }
+    var weekViewExpanded by remember { mutableStateOf(false) }
+
+    var monthViewSelected by remember { mutableStateOf("Day/Details") }
+    var weekViewSelected by remember { mutableStateOf("Details") }
 
     val monthNames = listOf(
         "January", "February", "March", "April", "May", "June", "July", "August", "September",
@@ -113,7 +118,6 @@ fun SettingsScreen (
     }
 
     Column(modifier = Modifier
-        .padding(top = 86.dp)
         .verticalScroll(scrollState)
         .background(Color(29, 29, 29))
         .fillMaxSize(),
@@ -145,9 +149,9 @@ fun SettingsScreen (
                     modifier = Modifier.padding(20.dp)
                         .size(20.dp)
                 )
-                Column(){
+                Column{
                     Text(
-                        text = "Shane Gillis",
+                        text = "Shane Gilles",
                         color = Color(255, 255, 255)
                     )
                     Text(
@@ -168,7 +172,7 @@ fun SettingsScreen (
             .width(500.dp)
             .border(width = 2.dp, color = Color(35, 35, 35))
         ){
-            Column() {
+            Column {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -238,7 +242,7 @@ fun SettingsScreen (
             .width(500.dp)
             .border(width = 2.dp, color = Color(35, 35, 35))
         ){
-            Column() {
+            Column{
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -308,8 +312,8 @@ fun SettingsScreen (
             .padding(start = 50.dp, end = 50.dp)
             .width(500.dp)
             .border(width = 2.dp, color = Color(35, 35, 35))
-        ) {
-            Column() {
+        ){
+            Column {
                 Text(
                     text = "Start Day",
                     modifier = Modifier.padding(20.dp),
@@ -329,6 +333,7 @@ fun SettingsScreen (
                             .size(20.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Box(
                         modifier = Modifier
                             .width(200.dp)
@@ -338,7 +343,7 @@ fun SettingsScreen (
                                 weekStartDateMenuExpanded = true
                             } // Opens start date options
                     ) {
-                        Row() {
+                        Row {
                             Text(
                                 text = weekStartDate,              // Updated to week start date
                                 color = Color(255, 255, 255),
@@ -347,15 +352,22 @@ fun SettingsScreen (
                                         top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp
+                                        end = 15.dp
                                     )
                             )
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
-                            )
+                            Button(
+                                onClick = { weekStartDateMenuExpanded = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(29, 29, 29)
+                                )
+                            ) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
                         }
                         DropdownMenu(
                             expanded = weekStartDateMenuExpanded,
@@ -390,6 +402,7 @@ fun SettingsScreen (
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Image(
                         imageVector = ImageVector.vectorResource(id = R.drawable.calendar_view_day),
                         contentDescription = null,
@@ -402,23 +415,55 @@ fun SettingsScreen (
                             .size(50.dp)
                             .border(width = 2.dp, color = Color(35, 35, 35))
                     ) {
-                        Row() {
+                        Row {
                             Text(
-                                text = "Day/Details",
+                                text = monthViewSelected,
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
                                     .padding(
                                         top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 45.dp
+                                        end = 15.dp
                                     )
                             )
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
+                            Button(
+                                onClick = { monthViewExpanded = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(29, 29, 29)
+                                )
+                            ) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
+                        }
+                        DropdownMenu(
+                            expanded = monthViewExpanded,
+                            onDismissRequest = {
+                                monthViewExpanded = false
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Day/Details")
+                                },
+                                onClick = {
+                                    monthViewSelected = "Day/Details"
+                                    monthViewExpanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Icons & Content")
+                                },
+                                onClick = {
+                                    monthViewSelected = "Icons & Content"
+                                    monthViewExpanded = false
+                                }
                             )
                         }
                     }
@@ -436,7 +481,7 @@ fun SettingsScreen (
             .padding(start = 50.dp, end = 50.dp, bottom = 10.dp)
             .width(500.dp)
             .border(width = 2.dp, color = Color(35, 35, 35))
-        ){
+        ) {
             Column() {
                 Text(
                     text = "Start Day",
@@ -458,12 +503,12 @@ fun SettingsScreen (
                     )
                     Box(
                         modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                        .clickable {
-                            weekStartDayMenuExpanded = true
-                        } // Opens weekly start day options
+                            .width(200.dp)
+                            .size(50.dp)
+                            .border(width = 2.dp, color = Color(35, 35, 35))
+                            .clickable {
+                                weekStartDayMenuExpanded = true
+                            } // Opens weekly start day options
                     ) {
                         Row() {
                             Text(
@@ -524,28 +569,37 @@ fun SettingsScreen (
                         modifier = Modifier.padding(10.dp)
                             .size(20.dp)
                     )
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                        .clickable { weekLengthMenuExpanded = true }            // Opens/Expand when selected
-                    ){
-                        Row() {
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .size(50.dp)
+                            .border(width = 2.dp, color = Color(35, 35, 35))
+                    ) {
+                        Row {
                             Text(                                    // Single days to multiple day reply.
                                 text = if (weekLength == 1) "1 Day" else "$weekLength Days",
                                 color = Color(255, 255, 255),
                                 modifier = Modifier
-                                    .padding(top = 10.dp,
+                                    .padding(
+                                        top = 10.dp,
                                         start = 10.dp,
                                         bottom = 10.dp,
-                                        end = 80.dp)
+                                        end = 55.dp
+                                    )
                             )
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
-                            )
+                            Button(
+                                onClick = { weekLengthMenuExpanded = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(29, 29, 29)
+                                )
+                            ) {
+                                Image(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
                         }
                         DropdownMenu(                           //  Display wee-length choices
                             expanded = weekLengthMenuExpanded,
@@ -589,7 +643,6 @@ fun SettingsScreen (
                         modifier = Modifier.padding(10.dp)
                             .size(20.dp)
                     )
-
                     Box(
                         modifier = Modifier
                             .width(200.dp)
@@ -597,7 +650,7 @@ fun SettingsScreen (
                             .border(width = 2.dp, color = Color(35, 35, 35))
                             .clickable { daysShownMenuExpanded = true } // Opens visible day options
                     ) {
-                        Row() {
+                        Row {
                             Text(
                                 text = selectedVisibleDaysLabel,
                                 color = Color(255, 255, 255),
@@ -644,51 +697,86 @@ fun SettingsScreen (
                             }
                         }
                     }
-                }
-
-                Text(
-                    text = "View",
-                    modifier = Modifier.padding(20.dp),
-                    color = Color(255, 255, 255)
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(all = 20.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.details_view),
-                        contentDescription = null,
-                        modifier = Modifier.padding(10.dp)
-                            .size(20.dp)
+                    Text(
+                        text = "View",
+                        modifier = Modifier.padding(20.dp),
+                        color = Color(255, 255, 255)
                     )
-                    Box(modifier = Modifier
-                        .width(200.dp)
-                        .size(50.dp)
-                        .border(width = 2.dp, color = Color(35, 35, 35))
-                    ){
-                        Row() {
-                            Text(
-                                text = "Details",
-                                color = Color(255, 255, 255),
-                                modifier = Modifier
-                                    .padding(top = 10.dp,
-                                        start = 10.dp,
-                                        bottom = 10.dp,
-                                        end = 80.dp)
-                            )
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
-                                contentDescription = null,
-                                modifier = Modifier.padding(15.dp)
-                                    .size(20.dp)
-                            )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 20.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.details_view),
+                            contentDescription = null,
+                            modifier = Modifier.padding(10.dp)
+                                .size(20.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .size(50.dp)
+                                .border(width = 2.dp, color = Color(35, 35, 35))
+                        ) {
+                            Row {
+                                Text(
+                                    text = weekViewSelected,
+                                    color = Color(255, 255, 255),
+                                    modifier = Modifier
+                                        .padding(
+                                            top = 10.dp,
+                                            start = 10.dp,
+                                            bottom = 10.dp,
+                                            end = 10.dp
+                                        )
+                                )
+                                Button(
+                                    onClick = { weekViewExpanded = true },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(29, 29, 29)
+                                    )
+                                ) {
+                                    Image(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.right_arrow),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                    )
+                                }
+                            }
+                            DropdownMenu(
+                                expanded = weekViewExpanded,
+                                onDismissRequest = {
+                                    weekViewExpanded = false
+                                }
+                            ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = "Details")
+                                    },
+                                    onClick = {
+                                        weekViewSelected = "Details"
+                                        weekViewExpanded = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = "Icons & Content")
+                                    },
+                                    onClick = {
+                                        weekViewSelected = "Icons & Content"
+                                        weekViewExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
+
         }
     }
 }
