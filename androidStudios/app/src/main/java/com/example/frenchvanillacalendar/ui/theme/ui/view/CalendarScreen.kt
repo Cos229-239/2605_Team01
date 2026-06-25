@@ -1,6 +1,9 @@
 package com.example.frenchvanillacalendar.ui.theme.ui.view
 
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Column
@@ -25,6 +28,10 @@ data class CalendarEvent(
     val time: String,
     val category: String,
 )
+data class CalendarDayCell(
+    val dayNumber: Int?,
+    val dayOfWeek: Int?
+)
 
 @Composable
 fun CalendarScreen(
@@ -34,6 +41,7 @@ fun CalendarScreen(
     month: Int,                         // Month from shared navs.
     year: Int,
     weekStartDate: String,              // picked start date from settings
+    selectedVisibleDays: Set<Int>,     // Weekdays calendar shows due to user settings
     onPreviousMonth: () -> Unit,        // Moves back a month
     onNextMonth: () -> Unit,
 ) {
@@ -85,7 +93,10 @@ fun CalendarScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            WeekdayRow(weekStartsOn = weekStartsOn)
+            WeekdayRow(
+                weekStartsOn = weekStartsOn,
+                weekLength = weekLength
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -93,7 +104,12 @@ fun CalendarScreen(
             MonthGrid(
                 events = events,
                 daysInMonth = daysInMonth,
-                startingBlankDays = startingBlankDays
+                startingBlankDays = startingBlankDays,
+                month = month,
+                year = year,
+                weekStartsOn = weekStartsOn,
+                weekLength = weekLength,
+                selectedVisibleDays = selectedVisibleDays
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -123,32 +139,83 @@ fun CalendarScreen(
 fun MonthGrid(
     events: List<CalendarEvent>,
     daysInMonth: Int,
-    startingBlankDays: Int
+    startingBlankDays: Int,
+    month: Int,
+    year: Int,
+    weekStartsOn: Int,
+    weekLength: Int,
+    selectedVisibleDays: Set<Int>
 ) {
-    val calendarSlots = List(startingBlankDays) { "" } + (1..daysInMonth).map { day ->
-        day.toString()
+    val calendarSlots = List(startingBlankDays) {
+        CalendarDayCell(
+            dayNumber = null,
+            dayOfWeek = null
+        )
+    } + (1..daysInMonth).map { day ->
+        val dateForDay = Calendar.getInstance().apply {
+            set(year, month, day)
+        }
+
+        CalendarDayCell(
+            dayNumber = day,
+            dayOfWeek = dateForDay.get(Calendar.DAY_OF_WEEK)
+        )
     }
+
     val trailingBlankDays =                              // Calculates empty cell for final row
         (7 - calendarSlots.size % 7) % 7
 
     val weeks =                                         // Splits calendar cells into rows
-        (calendarSlots + List(trailingBlankDays) { "" }).chunked(7)
-
+        (calendarSlots + List(trailingBlankDays) {
+            CalendarDayCell(
+                dayNumber = null,
+                dayOfWeek = null
+            )
+        }).chunked(7)
     Column {
         weeks.forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
-                week.forEach { day ->
+                week.forEach { dayCell ->
+                    val dayNumber = dayCell.dayNumber
+                    val dayOfWeek = dayCell.dayOfWeek
+
+                    val orderedWeekdays = listOf(
+                        Calendar.SUNDAY,
+                        Calendar.MONDAY,
+                        Calendar.TUESDAY,
+                        Calendar.WEDNESDAY,
+                        Calendar.THURSDAY,
+                        Calendar.FRIDAY,
+                        Calendar.SATURDAY
+                    )
+
+                    val startIndex = orderedWeekdays.indexOf(weekStartsOn)
+                    val activeWeekdays =
+                        (orderedWeekdays.drop(startIndex) + orderedWeekdays.take(startIndex))
+                            .take(weekLength)
+
+                    val shouldShowDay =
+                        dayNumber != null && dayOfWeek in selectedVisibleDays && dayOfWeek in activeWeekdays
+
                     val eventForDay = events.firstOrNull { event ->
-                        day.isNotBlank() && event.date == day.toInt()
+                        dayNumber != null && event.date == dayNumber
                     }
 
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 42.dp)
+                            .border(
+                                width = 1.dp,
+                                color = Color(150, 105, 210, 80)
+                            )
+                    ) {
                         Text(
-                            text = day,
+                            text = if (shouldShowDay) dayNumber.toString() else "",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
-                        if (eventForDay != null) {
+                        if (eventForDay != null && shouldShowDay) {
                             Text(
                                 text = "*",
                                 textAlign = TextAlign.Center,
@@ -164,7 +231,10 @@ fun MonthGrid(
 }
 
 @Composable
-fun WeekdayRow(weekStartsOn: Int) {
+fun WeekdayRow(
+    weekStartsOn: Int,
+    weekLength: Int
+) {
     val weekdays = listOf(              // Pairing labels
         Calendar.SUNDAY to "Sun",
         Calendar.MONDAY to "Mon",
@@ -180,11 +250,17 @@ fun WeekdayRow(weekStartsOn: Int) {
     val orderedWeekdays = weekdays.drop(startIndex) + weekdays.take(startIndex)
 
     Row(modifier = Modifier.fillMaxWidth()) {       // Flushed display
-        orderedWeekdays.forEach { day ->            // Order to follow
+        orderedWeekdays.forEach { day ->      // Order to follow
             Text(
-                text = day.second,
+                text = if (day.first in orderedWeekdays.take(weekLength).map { it.first }) day.second else "",
                 textAlign = TextAlign.Center,       // Location
-                modifier = Modifier.weight(1f)      // Weekday has equal space in the row
+                modifier = Modifier
+                    .weight(1f)
+                    .border(
+                        width = 1.dp,
+                        color = Color(150, 105, 210, 80)
+                    )
+                    .padding(vertical = 6.dp)
             )
         }
     }
@@ -200,6 +276,15 @@ fun CalendarPreview() {
             month = Calendar.JUNE,
             year = 2026,
             weekStartDate = "June 1, 2026",
+            selectedVisibleDays = setOf(
+                Calendar.SUNDAY,
+                Calendar.MONDAY,
+                Calendar.TUESDAY,
+                Calendar.WEDNESDAY,
+                Calendar.THURSDAY,
+                Calendar.FRIDAY,
+                Calendar.SATURDAY,
+            ),
             onPreviousMonth = {},                   // Testing > < functions
             onNextMonth = {}
         )
