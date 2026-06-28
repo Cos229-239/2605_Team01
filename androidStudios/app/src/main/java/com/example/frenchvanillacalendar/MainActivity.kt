@@ -8,18 +8,30 @@ import androidx.activity.enableEdgeToEdge
 import com.example.frenchvanillacalendar.ui.theme.ui.view.NavigationDrawer
 import com.example.frenchvanillacalendar.ui.theme.FrenchVanillaCalendarTheme
 import android.os.CountDownTimer //import the countdown timer
+import com.example.frenchvanillacalendar.ui.theme.ui.view.NavigationDrawer
 
+
+interface TimerListener //created interface of timer listener
+{
+    fun onTick(days: Long, hours: Long, minutes: Long, seconds: Long, millis: Long) //added to millis
+    fun onFinish()
+}
 //EventCountdownTimer class created
-class EventCountdownTimer(private val eventTimeMillis: Long,
-                          private val onTick: (days: Long, hours: Long, minutes: Long, seconds: Long) -> Unit,
-                          private val onFinish:() -> Unit)
+class EventCountdownTimer
+    (private val eventTimeMillis: Long,
+     private val listener: TimerListener)
+    //private val onTick: (days: Long, hours: Long, minutes: Long, seconds: Long, millis: Long) -> Unit,
+    //private val onFinish:() -> Unit)
 
-{private var timer: CountDownTimer? = null
-    fun start(){
+{
+    private var timer: CountDownTimer? = null
+    fun start()
+    {
         val millisUntilEvent = eventTimeMillis - System.currentTimeMillis()
 
-        if (millisUntilEvent <= 0){
-                onFinish()
+        if (millisUntilEvent <= 0)
+            {
+                listener.onFinish()
                 return
             }
 //        timer = object: CountDownTimeer(millisUntilEvent, 1000L)
